@@ -1,0 +1,1 @@
+{ "name": "infn-dmn-demo", "private": true, "type": "module", "scripts": { "dev": "node serve.mjs" } }

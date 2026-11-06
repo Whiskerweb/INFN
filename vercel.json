@@ -1,0 +1,10 @@
+{
+  "functions": { "api/chat.js": { "includeFiles": "corpus-dmn.md" } },
+  "rewrites": [
+    { "source": "/wp-content/:path*", "destination": "https://www.infn.fr/wp-content/:path*" },
+    { "source": "/wp-includes/:path*", "destination": "https://www.infn.fr/wp-includes/:path*" }
+  ],
+  "headers": [
+    { "source": "/(.*)", "headers": [ { "key": "X-Robots-Tag", "value": "noindex, nofollow" } ] }
+  ]
+}

@@ -1,0 +1,7 @@
+openrouter.key
+.env
+.env.*
+cache/
+.vercel/
+.claude/
+.DS_Store
