@@ -1,1 +1,1 @@
-{ "name": "infn-dmn-demo", "private": true, "type": "module", "scripts": { "dev": "node serve.mjs" } }
+{"name":"infn-dmn-demo","private":true,"type":"module","scripts":{"dev":"node serve.mjs"},"dependencies":{"@vercel/blob":"^2.8.2"}}

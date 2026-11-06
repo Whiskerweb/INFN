@@ -90,16 +90,25 @@
     body.appendChild(c); scroll();
   }
   async function pickSite(s){
-    if(busy) return; busy=true; bubble(s,true);
+    if(busy) return; busy=true; bubble(s,true); track({type:"site",site:s});
     await botSay(`Parfait, je note <b>INFN ${s}</b>. Laissez vos coordonnées : votre demande arrivera <b>directement à l'équipe de ce site</b>, déjà qualifiée.`);
     const c=document.createElement("form"); c.className="snx-card";
     c.innerHTML=`<label>Prénom et nom</label><input placeholder="Camille Martin"><label>E-mail</label><input type="email" placeholder="camille@exemple.fr"><button class="snx-cta" type="submit">Être recontacté par INFN ${s}</button><p class="snx-legal">Vos données sont transmises uniquement au site INFN choisi, avec votre accord. Vous pouvez demander leur suppression à tout moment.</p>`;
-    c.onsubmit=async e=>{e.preventDefault(); c.querySelector(".snx-cta").textContent="✓ Demande transmise"; c.querySelector(".snx-cta").style.background="#00B2BB";
+    c.onsubmit=async e=>{e.preventDefault(); if(c.dataset.sent) return; c.dataset.sent=1; track({type:"lead",site:s}); c.querySelector(".snx-cta").textContent="✓ Demande transmise"; c.querySelector(".snx-cta").style.background="#00B2BB";
       await botSay(`C'est noté ! L'équipe de <b>INFN ${s}</b> reçoit votre demande avec le résumé de notre échange. Autre chose ?`); chips(["Combien coûte le DMN ?","Comment financer ma formation ?"]);};
     body.appendChild(c); scroll(); busy=false;
   }
   // --- Réponses générées par l'IA (serveur local /api/chat), à partir du texte de la page uniquement ---
   let history=[];
+  const newSid=()=>Math.random().toString(36).slice(2,10)+Date.now().toString(36);
+  let sid=newSid(), turn=0;
+  const track=ev=>{ try{ fetch("/api/event",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({sid,turn,...ev}),keepalive:true}); }catch(e){} };
+  function feedback(){
+    const f=document.createElement("div"); f.className="snx-fb"; const myTurn=turn;
+    f.innerHTML='<span>Réponse utile ?</span><button data-v="up" aria-label="Utile">👍</button><button data-v="down" aria-label="Pas utile">👎</button>';
+    f.querySelectorAll("button").forEach(b=>b.onclick=()=>{ if(f.dataset.done) return; f.dataset.done=1; b.classList.add("on"); f.querySelector("span").textContent=b.dataset.v==="up"?"Merci !":"Merci, c'est noté."; fetch("/api/event",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({sid,turn:myTurn,type:"feedback",value:b.dataset.v})}).catch(()=>{}); });
+    body.appendChild(f); scroll();
+  }
   const escH=s=>s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
   function md(src){
     const lines=escH(src).split("\n"); let out="",list=false;
@@ -142,7 +151,7 @@
     body.appendChild(t); scroll();
     let full="", el=null;
     try{
-      const res=await fetch("/api/chat",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({messages:history})});
+      const res=await fetch("/api/chat",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({messages:history,sid,turn:++turn})});
       if(!res.ok||!res.body) throw new Error(await res.text());
       const rd=res.body.getReader(), dec=new TextDecoder();
       for(;;){ const {done,value}=await rd.read(); if(done) break;
@@ -159,6 +168,7 @@
     history.push({role:"assistant",content:visible});
     const sm=full.match(/\[\[\s*sources?\s*:([^\]]*)\]\]/i);
     pageSources(sm? sm[1].split("|").map(s=>s.replace(/^#+/,"").trim()).filter(Boolean).slice(0,3):[]);
+    feedback();
     if(/\[\[\s*sites\s*\]\]/i.test(full)) siteCard();
     busy=false;
   }
@@ -176,12 +186,12 @@
   }
   function open(v){
     root.classList.toggle("open",v); root.classList.add("seen"); teaser.classList.remove("show");
-    if(v&&!started){started=true; welcome();}
+    if(v&&!started){started=true; welcome(); track({type:"open"});}
     if(v) setTimeout(()=>ta.focus({preventScroll:true}),350);
   }
   root.querySelector(".snx-launch").onclick=()=>open(!root.classList.contains("open"));
   root.querySelector("[data-close]").onclick=()=>open(false);
-  root.querySelectorAll("[data-reset]").forEach(b=>b.onclick=()=>{ if(!busy){ history=[]; welcome(); } });
+  root.querySelectorAll("[data-reset]").forEach(b=>b.onclick=()=>{ if(!busy){ history=[]; sid=newSid(); turn=0; welcome(); } });
   root.querySelector("[data-expand]").onclick=()=>root.classList.toggle("big");
   teaser.onclick=e=>{ if(e.target.closest(".snx-x")){teaser.classList.remove("show"); root.classList.add("seen"); return;} open(true); };
   root.querySelector("form.snx-input").onsubmit=e=>{e.preventDefault(); const v=ta.value; ta.value=""; ta.style.height=""; ask(v);};

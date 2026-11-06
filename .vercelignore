@@ -6,3 +6,6 @@ build.py
 extract.py
 serve.mjs
 .claude/
+data/
+node_modules/
+.env.local

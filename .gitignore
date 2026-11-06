@@ -6,3 +6,6 @@ cache/
 .claude/
 .DS_Store
 .vercel
+.env*
+data/
+node_modules/

@@ -1,10 +1,12 @@
 {
   "functions": { "api/chat.js": { "includeFiles": "corpus-dmn.md" } },
   "rewrites": [
+    { "source": "/admin", "destination": "/admin/index.html" },
     { "source": "/wp-content/:path*", "destination": "https://www.infn.fr/wp-content/:path*" },
     { "source": "/wp-includes/:path*", "destination": "https://www.infn.fr/wp-includes/:path*" }
   ],
   "headers": [
-    { "source": "/(.*)", "headers": [ { "key": "X-Robots-Tag", "value": "noindex, nofollow" } ] }
+    { "source": "/(.*)", "headers": [ { "key": "X-Robots-Tag", "value": "noindex, nofollow" } ] },
+    { "source": "/admin(.*)", "headers": [ { "key": "X-Frame-Options", "value": "DENY" }, { "key": "Referrer-Policy", "value": "no-referrer" } ] }
   ]
 }
