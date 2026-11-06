@@ -17,7 +17,7 @@ export default async function handler(req, res) {
     try {
       await saveEvent({ type: "question", sid: meta.sid, turn: meta.turn, q: meta.q.slice(0, 1000), a: a.visible.slice(0, 4000),
         sources: a.sources, answered: a.answered, sites: a.sites, theme: themeOf(meta.q, a.sources),
-        ms: meta.ms, ttft: meta.ttft, model: meta.model, tokensIn: meta.tokensIn, tokensOut: meta.tokensOut, cost: meta.cost,
+        ms: meta.ms, ttft: meta.ttft, model: meta.model,
         device: /Mobi|Android|iPhone|iPad/i.test(ua) ? "mobile" : "desktop" });
     } catch (e) { console.error("saveEvent", e.message); }
   }

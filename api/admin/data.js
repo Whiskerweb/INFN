@@ -5,5 +5,7 @@ export const config = { maxDuration: 30 };
 export default async function handler(req, res) {
   if (!isAdmin(req)) return json(res, 401, { error: "auth" });
   const events = await listEvents({ limit: 5000 });
-  json(res, 200, { now: new Date().toISOString(), events });
+  // retire toute donnée de coût ou de consommation d'API (anciens événements compris)
+  const clean = events.map(({ cost, tokensIn, tokensOut, model, ...e }) => e);
+  json(res, 200, { now: new Date().toISOString(), events: clean });
 }

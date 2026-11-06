@@ -41,7 +41,6 @@ const shortDate = ts => { const p = parts(ts), today = parts(Date.now()).key;
 const offHours = p => p.dow >= 5 || p.hour < 9 || p.hour >= 18;
 const median = a => { if (!a.length) return null; const s = [...a].sort((x, y) => x - y), m = s.length >> 1; return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2; };
 const sec = ms => ms == null ? "—" : (ms / 1000).toLocaleString("fr-FR", { maximumFractionDigits: 1, minimumFractionDigits: 1 }) + " s";
-const usd = v => v == null ? "—" : (v < 0.01 ? v.toLocaleString("fr-FR", { maximumFractionDigits: 4 }) : v.toLocaleString("fr-FR", { maximumFractionDigits: 2 })) + " $";
 
 /* ---------- État ---------- */
 const S = { events: [], now: Date.now(), period: 7, view: "overview", f: { q: "", theme: "", status: "", fb: "" }, page: 0, loadedAt: null };
@@ -107,7 +106,7 @@ function stats() {
     devices: count(cur, q => q.device || "desktop"),
     heat, up, down: fbs.length - up, fbN: fbs.length,
     ms: median(cur.map(q => q.ms).filter(Number.isFinite)), ttft: median(cur.map(q => q.ttft).filter(Number.isFinite)),
-    cost: cur.reduce((s, q) => s + (q.cost || 0), 0), unanswered: cur.filter(q => !q.answered),
+    srcAvg: cur.length ? cur.reduce((s, q) => s + (q.sources?.length || 0), 0) / cur.length : null, unanswered: cur.filter(q => !q.answered),
   };
 }
 
@@ -251,8 +250,8 @@ function overview(st) {
       <div class="stats">
         <div class="stat"><small>Temps de réponse médian</small><b class="num">${sec(st.ms)}</b></div>
         <div class="stat"><small>Premier mot affiché</small><b class="num">${sec(st.ttft)}</b></div>
-        <div class="stat"><small>Coût IA de la période</small><b class="num">${usd(st.cost)}</b></div>
-        <div class="stat"><small>Coût moyen / question</small><b class="num">${st.q ? usd(st.cost / st.q) : "—"}</b></div>
+        <div class="stat"><small>Avis donnés</small><b class="num">${nf.format(st.fbN)}</b></div>
+        <div class="stat"><small>Questions / conversation</small><b class="num">${st.conv ? (st.q / st.conv).toLocaleString("fr-FR", { maximumFractionDigits: 1 }) : "—"}</b></div>
       </div>
     </div>
   </div>
@@ -349,7 +348,6 @@ function openDrawer(id) {
       <div><small>Statut</small><b>${statusBadge(q)}</b></div><div><small>Thème</small><b>${esc(q.theme || "Autre")}</b></div>
       <div><small>Avis</small><b>${qq._fb === "up" ? "👍 Utile" : qq._fb === "down" ? "👎 Pas utile" : "—"}</b></div><div><small>Site / contact</small><b>${qq._site ? "INFN " + esc(qq._site) + (qq._lead ? " · coordonnées laissées" : "") : "—"}</b></div>
       <div><small>Temps de réponse</small><b class="num">${sec(q.ms)} <span style="color:var(--mute);font-weight:500">(1er mot ${sec(q.ttft)})</span></b></div><div><small>Appareil</small><b>${q.device === "mobile" ? "Mobile" : "Ordinateur"}</b></div>
-      <div><small>Jetons (entrée / sortie)</small><b class="num">${q.tokensIn != null ? nf.format(q.tokensIn) + " / " + nf.format(q.tokensOut) : "—"}</b></div><div><small>Coût IA</small><b class="num">${usd(q.cost)}</b></div>
     </div>
     <h4 style="font-size:13px;color:var(--mute);font-weight:600;margin-bottom:10px">Conversation (${conv.filter(e => e.type === "question").length} question(s))</h4>
     <div class="thread">${thread}</div>
@@ -410,9 +408,9 @@ setInterval(() => { if (!$("#app").hidden && document.visibilityState === "visib
 
 function csv() {
   const st = stats(), rows = S.view === "questions" && S._rows ? S._rows : st.cur;
-  const head = ["Date", "Question", "Réponse", "Thème", "Statut", "Avis", "Site", "Coordonnées laissées", "Sources", "Temps de réponse (s)", "Appareil", "Coût ($)"];
+  const head = ["Date", "Question", "Réponse", "Thème", "Statut", "Avis", "Site", "Coordonnées laissées", "Sources", "Temps de réponse (s)", "Appareil"];
   const cell = v => `"${String(v ?? "").replace(/"/g, '""')}"`;
-  const lines = [head.map(cell).join(";")].concat(rows.map(q => [fullDate(q.ts), q.q, q.a, q.theme, q.answered ? "Répondue" : "Sans réponse", q._fb === "up" ? "Utile" : q._fb === "down" ? "Pas utile" : "", q._site || "", q._lead ? "oui" : "", (q.sources || []).join(" | "), q.ms != null ? (q.ms / 1000).toFixed(1).replace(".", ",") : "", q.device, q.cost != null ? String(q.cost).replace(".", ",") : ""].map(cell).join(";")));
+  const lines = [head.map(cell).join(";")].concat(rows.map(q => [fullDate(q.ts), q.q, q.a, q.theme, q.answered ? "Répondue" : "Sans réponse", q._fb === "up" ? "Utile" : q._fb === "down" ? "Pas utile" : "", q._site || "", q._lead ? "oui" : "", (q.sources || []).join(" | "), q.ms != null ? (q.ms / 1000).toFixed(1).replace(".", ",") : "", q.device].map(cell).join(";")));
   const blob = new Blob(["﻿" + lines.join("\r\n")], { type: "text/csv;charset=utf-8" });
   const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = `assistant-dmn-questions-${parts(Date.now()).key}.csv`; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1000);
   toast(`${rows.length} question(s) exportée(s)`);
