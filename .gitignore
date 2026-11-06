@@ -5,3 +5,4 @@ cache/
 .vercel/
 .claude/
 .DS_Store
+.vercel
