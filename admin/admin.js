@@ -20,6 +20,7 @@ const I = {
   close: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg>',
   search: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>',
   inbox: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M3 13h5l1.5 3h5L16 13h5"/><path d="M5.5 5h13L21 13v6a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1v-6Z"/></svg>',
+  spark2: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 3l1.8 4.7L18.5 9.5l-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8Z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8Z"/></svg>',
   copy: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>',
 };
 
@@ -43,9 +44,10 @@ const median = a => { if (!a.length) return null; const s = [...a].sort((x, y) =
 const sec = ms => ms == null ? "—" : (ms / 1000).toLocaleString("fr-FR", { maximumFractionDigits: 1, minimumFractionDigits: 1 }) + " s";
 
 /* ---------- État ---------- */
-const S = { events: [], now: Date.now(), period: 7, view: "overview", f: { q: "", theme: "", status: "", fb: "" }, page: 0, loadedAt: null };
-try { const s = JSON.parse(localStorage.getItem("infn-admin-ui") || "{}"); if (s.period != null) S.period = s.period; } catch {}
-const saveUI = () => { try { localStorage.setItem("infn-admin-ui", JSON.stringify({ period: S.period })); } catch {} };
+const S = { events: [], real: [], demo: null, mode: "real", comm: {}, commBusy: false, now: Date.now(), period: 7, view: "overview", f: { q: "", theme: "", status: "", fb: "" }, page: 0, loadedAt: null };
+try { const s = JSON.parse(localStorage.getItem("infn-admin-ui") || "{}"); if (s.period != null) S.period = s.period; if (s.mode) S.mode = s.mode; } catch {}
+try { S.comm = JSON.parse(localStorage.getItem("infn-admin-comm") || "{}"); } catch {}
+const saveUI = () => { try { localStorage.setItem("infn-admin-ui", JSON.stringify({ period: S.period, mode: S.mode })); } catch {} };
 
 function model() {
   const qs = [], fb = new Map(), sitesBySid = new Map(), leadsBySid = new Map();
@@ -106,6 +108,8 @@ function stats() {
     devices: count(cur, q => q.device || "desktop"),
     heat, up, down: fbs.length - up, fbN: fbs.length,
     ms: median(cur.map(q => q.ms).filter(Number.isFinite)), ttft: median(cur.map(q => q.ttft).filter(Number.isFinite)),
+    themeRows: (() => { const m = new Map(); for (const q of cur) { const k = q.theme || "Autre"; const r = m.get(k) || { theme: k, n: 0, ok: 0, fb: 0, up: 0 }; r.n++; if (q.answered) r.ok++; if (q._fb) { r.fb++; if (q._fb === "up") r.up++; } m.set(k, r); }
+      return [...m.values()].map(r => ({ ...r, rate: 100 * r.ok / r.n })).sort((a, b) => b.n - a.n); })(),
     srcAvg: cur.length ? cur.reduce((s, q) => s + (q.sources?.length || 0), 0) / cur.length : null, unanswered: cur.filter(q => !q.answered),
   };
 }
@@ -217,64 +221,128 @@ function emptyState(msg) {
   return `<div class="card"><div class="empty">${I.inbox}<b>Aucune question pour l'instant</b>${msg || "Les questions posées à l'assistant sur la page du DMN apparaîtront ici en temps réel."}</div></div>`;
 }
 
+const kpi = (icon, lbl, val, foot, sp = "") => `<div class="card kpi">${sp}<div class="lbl"><em>${icon}</em>${lbl}</div><div class="val num">${val}</div><div class="foot">${foot}</div></div>`;
+const pctVal = v => v == null ? "—" : nf.format(Math.round(v)) + "<small>%</small>";
+
+/* Vue d'ensemble : l'essentiel, sans surcharge */
 function overview(st) {
   const sparkQ = st.buckets.map(b => b.ok + b.ko), sparkR = st.buckets.map(b => b.ok + b.ko ? 100 * b.ok / (b.ok + b.ko) : 0);
-  const qpc = st.conv ? (st.q / st.conv).toLocaleString("fr-FR", { maximumFractionDigits: 1 }) : "—";
-  const k = (icon, lbl, val, foot, sp = "") => `<div class="card kpi">${sp}<div class="lbl"><em>${icon}</em>${lbl}</div><div class="val num">${val}</div><div class="foot">${foot}</div></div>`;
-  const totalDev = st.devices.reduce((s, d) => s + d[1], 0) || 1, mob = (st.devices.find(d => d[0] === "mobile") || [0, 0])[1];
-  const satPct = st.fbN ? 100 * st.up / st.fbN : null, C = 2 * Math.PI * 34;
-  const recent = st.cur.slice(0, 6);
+  const gaps = topQuestions(st.unanswered).slice(0, 5), recent = st.cur.slice(0, 6);
   return `
-  <div class="grid kpis">
-    ${k(I.q, "Questions posées", nf.format(st.q), delta(st.q, st.qPrev) + "<span>vs période précédente</span>", spark(sparkQ))}
-    ${k(I.users, "Conversations", nf.format(st.conv), `${delta(st.conv, st.convPrev)}<span>${qpc} question(s) / conv.</span>`)}
-    ${k(I.check, "Taux de réponse", st.rate == null ? "—" : nf.format(Math.round(st.rate)) + "<small>%</small>", `${delta(st.rate, st.ratePrev, { pts: true })}<span class="meter"><i style="width:${st.rate || 0}%"></i></span>`, spark(sparkR, "#0E9F6E"))}
-    ${k(I.moon, "Hors heures ouvrées", st.off == null ? "—" : nf.format(Math.round(st.off)) + "<small>%</small>", "<span>soirs (18 h – 9 h) et week-ends</span>")}
-    ${k(I.send, "Demandes transmises", nf.format(st.transmitted ?? 0), `${delta(st.transmitted, st.transmittedPrev)}<span>dont ${st.leads} avec coordonnées</span>`)}
+  <div class="grid kpis k4">
+    ${kpi(I.q, "Questions posées", nf.format(st.q), delta(st.q, st.qPrev) + "<span>vs période précédente</span>", spark(sparkQ))}
+    ${kpi(I.check, "Taux de réponse", pctVal(st.rate), `${delta(st.rate, st.ratePrev, { pts: true })}<span class="meter"><i style="width:${st.rate || 0}%"></i></span>`, spark(sparkR, "#0E9F6E"))}
+    ${kpi(I.moon, "Hors heures ouvrées", pctVal(st.off), "<span>soirs (18 h – 9 h) et week-ends</span>")}
+    ${kpi(I.send, "Demandes transmises", nf.format(st.transmitted ?? 0), `${delta(st.transmitted, st.transmittedPrev)}<span>dont ${st.leads} avec coordonnées</span>`)}
   </div>
-
-  <div class="grid g-2-1">
-    <div class="card">
-      <div class="card-h"><div><h3>Questions ${st.weekly ? "par semaine" : "par jour"}</h3><p>Répondues par l'assistant ou restées sans réponse</p></div>
-        <div class="legend"><span><i style="background:${C_OK}"></i>Répondues</span><span><i style="background:${C_KO}"></i>Sans réponse</span></div></div>
-      ${st.q ? dailyChart(st) : emptyMini()}
-    </div>
-    <div class="card">
-      <div class="card-h"><div><h3>Qualité et performance</h3><p>Avis des visiteurs et rapidité des réponses</p></div></div>
-      <div class="sat">
-        <svg class="ring" viewBox="0 0 84 84" role="img" aria-label="Satisfaction"><circle cx="42" cy="42" r="34" fill="none" stroke="#F0F2F7" stroke-width="9"/>
-          ${satPct != null ? `<circle cx="42" cy="42" r="34" fill="none" stroke="#0E9F6E" stroke-width="9" stroke-linecap="round" stroke-dasharray="${(C * satPct / 100).toFixed(1)} ${C.toFixed(1)}" transform="rotate(-90 42 42)"/>` : ""}
-          <text x="42" y="47" text-anchor="middle" font-size="16" font-weight="700" fill="#0E1631">${satPct == null ? "—" : Math.round(satPct) + "%"}</text></svg>
-        <div class="t"><b>${satPct == null ? "Pas encore d'avis" : "Réponses jugées utiles"}</b><p>${st.fbN ? `${st.up} 👍 · ${st.down} 👎 sur ${st.fbN} avis` : "Les visiteurs peuvent noter chaque réponse."}</p></div>
-      </div>
-      <div class="stats">
-        <div class="stat"><small>Temps de réponse médian</small><b class="num">${sec(st.ms)}</b></div>
-        <div class="stat"><small>Premier mot affiché</small><b class="num">${sec(st.ttft)}</b></div>
-        <div class="stat"><small>Avis donnés</small><b class="num">${nf.format(st.fbN)}</b></div>
-        <div class="stat"><small>Questions / conversation</small><b class="num">${st.conv ? (st.q / st.conv).toLocaleString("fr-FR", { maximumFractionDigits: 1 }) : "—"}</b></div>
-      </div>
-    </div>
+  <div class="card" style="margin-bottom:16px">
+    <div class="card-h"><div><h3>Questions ${st.weekly ? "par semaine" : "par jour"}</h3><p>Répondues par l'assistant ou restées sans réponse</p></div>
+      <div class="legend"><span><i style="background:${C_OK}"></i>Répondues</span><span><i style="background:${C_KO}"></i>Sans réponse</span></div></div>
+    ${st.q ? dailyChart(st) : emptyMini()}
   </div>
-
   <div class="grid g-1-1">
-    <div class="card"><div class="card-h"><div><h3>Thèmes des questions</h3><p>Cliquez sur un thème pour voir les questions</p></div></div>${rankList(st.themes, st.q, { click: "theme" })}</div>
+    <div class="card"><div class="card-h"><div><h3>À enrichir en priorité</h3><p>Questions les plus posées restées sans réponse</p></div><button class="act" data-go="gaps">Tout voir →</button></div>
+      ${gaps.length ? `<div class="rank">${gaps.map(([q, n]) => `<div class="it"><span class="n" title="${esc(q)}">${esc(q)}</span><span class="v"><b>${n}</b>fois</span></div>`).join("")}</div>` : emptyMini()}
+    </div>
+    <div class="card"><div class="card-h"><div><h3>Dernières questions</h3><p>En temps réel</p></div><button class="act" data-go="questions">Tout voir →</button></div>
+      ${recent.length ? `<div class="mini-list">${recent.map(q => `<button class="mini" data-open="${q.id}"><span class="d">${shortDate(q.ts)}</span><span class="t">${esc(q.q)}</span>${q.answered ? `<span class="dot ok" title="Répondue"></span>` : `<span class="dot ko" title="Sans réponse"></span>`}</button>`).join("")}</div>` : emptyMini()}
+    </div>
+  </div>`;
+}
+
+/* Analytics : le détail pour comprendre */
+function analytics(st) {
+  const totalDev = st.devices.reduce((s, d) => s + d[1], 0) || 1, mob = (st.devices.find(d => d[0] === "mobile") || [0, 0])[1];
+  const satPct = st.fbN ? 100 * st.up / st.fbN : null, C = 2 * Math.PI * 34, qpc = st.conv ? (st.q / st.conv).toLocaleString("fr-FR", { maximumFractionDigits: 1 }) : "—";
+  const top = topQuestions(st.cur).slice(0, 8);
+  return `
+  <div class="grid kpis k4">
+    ${kpi(I.users, "Conversations", nf.format(st.conv), `${delta(st.conv, st.convPrev)}<span>${qpc} question(s) / conv.</span>`)}
+    ${kpi(I.q, "Ouvertures de l'assistant", nf.format(st.opens), `<span>${st.opens ? pf(100 * st.conv / st.opens) : "—"} débouchent sur une question</span>`)}
+    ${kpi(I.check, "Réponses jugées utiles", satPct == null ? "—" : pctVal(satPct), `<span>${st.fbN} avis · ${st.down} 👎</span>`)}
+    ${kpi(I.moon, "Temps de réponse médian", sec(st.ms).replace(" s", "<small> s</small>"), `<span>premier mot en ${sec(st.ttft)}</span>`)}
+  </div>
+  <div class="card" style="margin-bottom:16px">
+    <div class="card-h"><div><h3>Performance par thème</h3><p>Volume, taux de réponse et satisfaction — cliquez pour voir les questions</p></div></div>
+    <div class="tbl-wrap"><table class="theme-tbl"><thead><tr><th>Thème</th><th style="width:34%">Volume</th><th style="text-align:right">Questions</th><th style="text-align:right">Répondues</th><th style="text-align:right">Utiles</th></tr></thead><tbody>
+    ${st.themeRows.map(r => `<tr data-theme="${esc(r.theme)}"><td><span class="chip"><i></i>${esc(r.theme)}</span></td><td><span class="bar-in"><i style="width:${(100 * r.n / st.themeRows[0].n).toFixed(1)}%"></i></span></td><td class="r"><b style="color:var(--ink)">${r.n}</b> · ${pf(100 * r.n / st.q)}</td><td class="r">${rateCell(r.rate)}</td><td class="r">${r.fb ? pf(100 * r.up / r.fb) : "—"}</td></tr>`).join("")}
+    </tbody></table></div>
+  </div>
+  <div class="grid g-1-1">
+    <div class="card"><div class="card-h"><div><h3>Questions les plus posées</h3><p>Formulations identiques regroupées</p></div></div>
+      ${top.length ? `<div class="rank">${top.map(([q, n, ok]) => `<div class="it"><span class="n" title="${esc(q)}">${ok ? "" : `<span class="dot ko" title="Sans réponse"></span>`}${esc(q)}</span><span class="v"><b>${n}</b>fois</span><span class="bar"><i style="width:${(100 * n / top[0][1]).toFixed(1)}%;${ok ? "" : "background:" + C_KO}"></i></span></div>`).join("")}</div>` : emptyMini()}</div>
     <div class="card"><div class="card-h"><div><h3>Quand les questions arrivent</h3><p>Jour et heure (heure de Paris)</p></div></div>${heatmap(st)}</div>
   </div>
-
   <div class="grid g-3">
     <div class="card"><div class="card-h"><div><h3>Sites d'enseignement demandés</h3><p>Conversations orientées vers un site</p></div></div>${rankList(st.sites.slice(0, 8), 0)}</div>
     <div class="card"><div class="card-h"><div><h3>Sections de la page utilisées</h3><p>Sources citées dans les réponses</p></div></div>${rankList(st.sections.slice(0, 8), 0)}</div>
     <div class="card"><div class="card-h"><div><h3>Appareils</h3><p>D'où les questions sont posées</p></div></div>
       ${st.q ? `<div class="split"><i style="width:${100 * mob / totalDev}%;background:${C_OK}"></i><i style="width:${100 - 100 * mob / totalDev}%;background:#A9C1FB"></i></div>
       <div class="split-l"><span><b>${pf(100 * mob / totalDev)}</b> mobile</span><span><b>${pf(100 - 100 * mob / totalDev)}</b> ordinateur</span></div>
-      <div class="stats" style="margin-top:16px"><div class="stat"><small>Ouvertures de l'assistant</small><b class="num">${nf.format(st.opens)}</b></div><div class="stat"><small>Questions sans réponse</small><b class="num">${nf.format(st.unanswered.length)}</b></div></div>` : emptyMini()}
+      <div class="sat" style="margin:18px 0 0"><svg class="ring" viewBox="0 0 84 84" role="img" aria-label="Satisfaction"><circle cx="42" cy="42" r="34" fill="none" stroke="#F0F2F7" stroke-width="9"/>
+          ${satPct != null ? `<circle cx="42" cy="42" r="34" fill="none" stroke="#0E9F6E" stroke-width="9" stroke-linecap="round" stroke-dasharray="${(C * satPct / 100).toFixed(1)} ${C.toFixed(1)}" transform="rotate(-90 42 42)"/>` : ""}
+          <text x="42" y="47" text-anchor="middle" font-size="16" font-weight="700" fill="#0E1631">${satPct == null ? "—" : Math.round(satPct) + "%"}</text></svg>
+        <div class="t"><b style="font-size:15px">Satisfaction</b><p>${st.up} 👍 · ${st.down} 👎</p></div></div>` : emptyMini()}
     </div>
-  </div>
-
-  <div class="card">
-    <div class="card-h"><div><h3>Dernières questions</h3><p>Les 6 plus récentes de la période</p></div><button class="act" data-go="questions">Voir toutes les questions →</button></div>
-    ${recent.length ? table(recent, { compact: true }) : emptyMini()}
   </div>`;
+}
+const rateCell = v => v == null ? "—" : `<span class="badge ${v >= 70 ? "ok" : "ko"}">${pf(v)}</span>`;
+function topQuestions(list) {
+  const m = new Map(); for (const q of list) { const k = q.q.trim().replace(/\s+/g, " "); const o = m.get(k) || [k, 0, q.answered]; o[1]++; m.set(k, o); }
+  return [...m.values()].sort((a, b) => b[1] - a[1]);
+}
+
+/* Aide com' : newsletter et réseaux sociaux à partir des questions récentes */
+function digest(st) {
+  const tq = topQuestions(st.cur);
+  return {
+    periode: rangeText(st.R).split(" · ")[0], questions: st.q, conversations: st.conv, taux_reponse: Math.round(st.rate || 0) + " %", hors_heures: Math.round(st.off || 0) + " %",
+    themes: st.themeRows.map(r => ({ theme: r.theme, questions: r.n, sans_reponse_pct: Math.round(100 - (r.rate || 0)), avis_negatifs: r.fb - r.up })),
+    questions_sans_reponse: topQuestions(st.unanswered).slice(0, 25).map(([q, n]) => ({ q, n })),
+    questions_frequentes: tq.slice(0, 20).map(([q, n, ok]) => ({ q, n, repondue: ok })),
+    avis_negatifs: st.cur.filter(q => q._fb === "down").slice(0, 15).map(q => q.q),
+    sites_demandes: st.sites.slice(0, 6).map(([s, n]) => ({ site: s, n })),
+  };
+}
+function commView(st) {
+  const key = S.mode + "|" + S.period, c = S.comm[key];
+  const head = `<div class="card comm-hero">
+    <div style="display:flex;gap:14px;align-items:flex-start;flex-wrap:wrap">
+      ${I.bulb.replace("<svg", '<svg style="width:22px;height:22px;flex:none;color:#14CCFF;margin-top:2px"')}
+      <div style="flex:1;min-width:240px"><h3 style="font-size:15px;margin-bottom:4px">Vos prochains contenus, guidés par les questions des candidats</h3>
+      <p style="opacity:.85;font-size:13px;max-width:720px">L'IA analyse les ${nf.format(st.q)} questions de la période (${rangeText(st.R).split(" · ")[0].toLowerCase()}) : thèmes mal compris, idées pour la newsletter de janvier et posts prêts à adapter. Les faits viennent uniquement de la page DMN ; ce qui manque est signalé « À compléter par l'équipe ».</p></div>
+      <button class="btn btn-gen" id="genComm" ${st.q ? "" : "disabled"}>${I.spark2}${c ? "Régénérer" : "Générer les idées"}</button>
+    </div></div>`;
+  if (S.commBusy) return head + `<div class="card"><div class="gen-wait"><span class="loader"></span><b>Analyse des questions en cours…</b><small>Rédaction des idées de newsletter et des posts (≈ 20 s)</small></div></div>`;
+  if (!c) return head + `<div class="card"><div class="empty">${I.bulb}<b>Prêt à analyser</b>Cliquez sur « Générer les idées » pour obtenir les thèmes à clarifier, des idées de newsletter et des posts réseaux sociaux.</div></div>`;
+  if (c.error) return head + `<div class="card"><div class="empty">${I.alert}<b>La génération n'a pas abouti</b>Réessayez dans un instant.</div></div>`;
+  const pri = p => `<span class="badge ${p === "haute" ? "ko" : "ok"}" style="${p === "basse" ? "background:var(--line2);color:var(--mute)" : ""}">Priorité ${esc(p || "moyenne")}</span>`;
+  const todo = s => esc(s).replace(/\[À compléter par l'équipe[^\]]*\]/g, m => `<mark class="todo">${m}</mark>`);
+  const copyBtn = txt => `<button class="btn sm" data-copy="${esc(txt)}">${I.copy}Copier</button>`;
+  const net = { LinkedIn: "in", Instagram: "ig", Facebook: "fb" };
+  return head + `
+  <p class="gen-meta">Généré ${shortDate(c.generatedAt).toLowerCase()} · ${esc(c.resume || "")}</p>
+  <h2 class="sec-t">Ce que les candidats comprennent mal</h2>
+  <div class="grid g-3 cards-auto">${(c.themes || []).map(t => `<div class="card idea"><div class="idea-h"><b>${esc(t.theme)}</b>${pri(t.priorite)}</div><small class="sig">${esc(t.signal)}</small><p>${todo(t.constat)}</p><div class="add"><small>À ajouter sur la page</small>${todo(t.a_ajouter)}</div></div>`).join("")}</div>
+  <h2 class="sec-t">Idées pour la newsletter de janvier</h2>
+  <div class="grid g-3 cards-auto">${(c.newsletter || []).map((n, i) => `<div class="card idea"><div class="idea-h"><span class="num-badge">${i + 1}</span><b>${esc(n.titre)}</b></div><p class="mute">${todo(n.angle)}</p>
+    <small class="lbl2">Variantes d'objet</small><ul class="subj">${(n.objets || []).map(o => `<li><span>${todo(o)}</span><button class="icon-btn" data-copy="${esc(o)}" title="Copier">${I.copy}</button></li>`).join("")}</ul>
+    <small class="lbl2">Contenu</small><ul class="plan">${(n.plan || []).map(p => `<li>${todo(p)}</li>`).join("")}</ul>
+    <div class="cta-l"><small>Appel à l'action</small>${todo(n.cta)}</div></div>`).join("")}</div>
+  <h2 class="sec-t">Posts réseaux sociaux</h2>
+  <div class="grid g-3 cards-auto">${(c.posts || []).map(p => `<div class="card idea post"><div class="idea-h"><span class="net ${net[p.reseau] || ""}">${esc(p.reseau)}</span><b>${esc(p.sujet)}</b></div><div class="post-tx">${todo(p.texte).replace(/\n/g, "<br>")}</div><small class="vis">🎨 ${esc(p.visuel)}</small><div style="margin-top:auto;padding-top:12px">${copyBtn(p.texte)}</div></div>`).join("")}</div>
+  <h2 class="sec-t">FAQ à ajouter sur la page DMN</h2>
+  <div class="card">${(c.faq || []).map(f => `<details class="faq"><summary>${esc(f.question)}</summary><p>${todo(f.reponse)}</p></details>`).join("")}</div>`;
+}
+async function genComm() {
+  const st = stats(), key = S.mode + "|" + S.period; S.commBusy = true; render();
+  try {
+    const r = await fetch("/api/admin/comm", { method: "POST", headers: { "Content-Type": "application/json" }, credentials: "same-origin", body: JSON.stringify({ digest: digest(st) }) });
+    if (r.status === 401) { S.commBusy = false; showLogin(); return; }
+    S.comm[key] = r.ok ? await r.json() : { error: true };
+    if (r.ok) { try { localStorage.setItem("infn-admin-comm", JSON.stringify(S.comm)); } catch {} toast("Idées générées"); }
+  } catch { S.comm[key] = { error: true }; }
+  S.commBusy = false; if (S.view === "comm") render();
 }
 
 function table(rows, { compact } = {}) {
@@ -360,7 +428,7 @@ $("#scrim").onclick = closeDrawer;
 document.addEventListener("keydown", e => { if (e.key === "Escape") closeDrawer(); });
 
 /* ---------- Rendu ---------- */
-const TITLES = { overview: "Vue d'ensemble", questions: "Questions", gaps: "À enrichir" };
+const TITLES = { overview: "Vue d'ensemble", analytics: "Analytics", questions: "Questions", gaps: "À enrichir", comm: "Aide com' · newsletter et réseaux" };
 function render() {
   const st = stats();
   $("#title").textContent = TITLES[S.view];
@@ -371,8 +439,10 @@ function render() {
   document.querySelectorAll("#nav button").forEach(b => b.classList.toggle("on", b.dataset.view === S.view));
   document.querySelectorAll("#period button").forEach(b => b.classList.toggle("on", +b.dataset.p === S.period));
   const v = $("#view");
-  if (!st.all.length) { v.innerHTML = emptyState(); return; }
-  v.innerHTML = S.view === "overview" ? overview(st) : S.view === "questions" ? questionsView(st) : gapsView(st);
+  document.querySelectorAll("#mode button").forEach(b => b.classList.toggle("on", b.dataset.mode === S.mode));
+  if (!st.all.length) { v.innerHTML = emptyState(S.mode === "real" ? `Les questions posées à l'assistant sur la page du DMN apparaîtront ici en temps réel.<br><br><button class="btn" data-mode="demo" style="margin:auto">Voir le tableau de bord avec des données de démonstration</button>` : ""); bindView(); return; }
+  const V = { overview, analytics, questions: questionsView, gaps: gapsView, comm: commView };
+  v.innerHTML = (S.mode === "demo" ? `<div class="demo-banner">${I.alert}<span><b>Mode démonstration</b> · trafic simulé à partir de vraies réponses de l'assistant. Les chiffres ne reflètent pas une utilisation réelle.</span><button data-mode="real">Voir les données réelles</button></div>` : "") + V[S.view](st);
   bindDaily(st); bindHeat(); bindView();
 }
 function bindView() {
@@ -381,9 +451,11 @@ function bindView() {
   v.querySelectorAll("[data-go]").forEach(b => b.onclick = () => { S.view = b.dataset.go; render(); scrollTo(0, 0); });
   v.querySelectorAll("[data-theme]").forEach(b => b.onclick = () => { S.view = "questions"; S.f = { q: "", theme: b.dataset.theme, status: "", fb: "" }; S.page = 0; render(); scrollTo(0, 0); });
   v.querySelectorAll("[data-open]").forEach(b => b.onclick = () => openDrawer(b.dataset.open));
-  v.querySelectorAll("[data-copy]").forEach(b => b.onclick = async () => { try { await navigator.clipboard.writeText(b.dataset.copy); toast("Question copiée"); } catch { toast("Copie impossible"); } });
+  v.querySelectorAll("[data-copy]").forEach(b => b.onclick = async () => { try { await navigator.clipboard.writeText(b.dataset.copy); toast("Copié dans le presse-papiers"); } catch { toast("Copie impossible"); } });
   const fq = $("#fq"); if (fq) { fq.oninput = () => { S.f.q = fq.value; S.page = 0; clearTimeout(fq._t); fq._t = setTimeout(() => { render(); const n = $("#fq"); n.focus(); n.setSelectionRange(n.value.length, n.value.length); }, 180); }; }
   [["#ftheme", "theme"], ["#fstatus", "status"], ["#ffb", "fb"]].forEach(([s, k]) => { const el = $(s); if (el) el.onchange = () => { S.f[k] = el.value; S.page = 0; render(); }; });
+  v.querySelectorAll("[data-mode]").forEach(b => b.onclick = () => setMode(b.dataset.mode));
+  const g = $("#genComm"); if (g) g.onclick = genComm;
   const p = $("#prev"), n = $("#next"); if (p) p.onclick = () => { S.page--; render(); }; if (n) n.onclick = () => { S.page++; render(); };
 }
 function skeleton() {
@@ -397,10 +469,23 @@ async function load(manual) {
     const r = await fetch("/api/admin/data", { cache: "no-store", credentials: "same-origin" });
     if (r.status === 401) { showLogin(); return; }
     if (!r.ok) throw new Error(r.status);
-    const d = await r.json(); S.events = d.events || []; S.now = Date.parse(d.now) || Date.now(); S.loadedAt = Date.now();
+    const d = await r.json(); S.real = d.events || []; S.now = Date.parse(d.now) || Date.now(); S.loadedAt = Date.now();
+    if (S.mode === "demo") await loadDemo(); S.events = S.mode === "demo" ? S.demo : S.real;
     showApp(); render(); stamp(); if (manual) toast("Données à jour");
   } catch (e) { toast("Impossible de charger les données"); console.error(e); }
   finally { btn.classList.remove("spin"); }
+}
+// Données de démonstration : décalées pour que la dernière journée du jeu tombe aujourd'hui (jours et heures conservés).
+async function loadDemo() {
+  if (S.demo) return;
+  const d = await (await fetch("/admin/demo-data.json", { cache: "no-store" })).json();
+  const shift = Math.max(0, Math.floor((S.now - Date.parse(d.generatedAt)) / 864e5)) * 864e5;
+  S.demo = d.events.map(e => ({ ...e, ts: new Date(Date.parse(e.ts) + shift).toISOString() }));
+}
+async function setMode(m) {
+  S.mode = m; saveUI(); S.page = 0; closeDrawer();
+  if (m === "demo") { try { await loadDemo(); } catch { toast("Données de démonstration indisponibles"); S.mode = "real"; } }
+  S.events = S.mode === "demo" ? S.demo : S.real; render(); toast(S.mode === "demo" ? "Mode démonstration" : "Données réelles");
 }
 function stamp() { if (!S.loadedAt) return; const m = Math.round((Date.now() - S.loadedAt) / 60000); $("#updated").textContent = m < 1 ? "Mis à jour à l'instant" : `Mis à jour il y a ${m} min`; }
 setInterval(stamp, 30000);
@@ -430,6 +515,7 @@ $("#loginForm").onsubmit = async e => {
   btn.disabled = false;
 };
 $("#logout").onclick = async () => { await fetch("/api/admin/logout", { method: "POST", credentials: "same-origin" }).catch(() => {}); S.events = []; showLogin(); };
+document.querySelectorAll("#mode button").forEach(b => b.onclick = () => setMode(b.dataset.mode));
 document.querySelectorAll("#nav button").forEach(b => b.onclick = () => { S.view = b.dataset.view; S.page = 0; render(); scrollTo(0, 0); });
 document.querySelectorAll("#period button").forEach(b => b.onclick = () => { S.period = +b.dataset.p; S.page = 0; saveUI(); render(); });
 $("#refresh").onclick = () => load(true);

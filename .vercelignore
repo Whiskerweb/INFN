@@ -9,3 +9,4 @@ serve.mjs
 data/
 node_modules/
 .env.local
+demo/

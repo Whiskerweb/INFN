@@ -1,0 +1,912 @@
+[
+ {
+  "q": "Quels sont les frais de candidature ?",
+  "a": "Les frais de candidature au DMN sont de **150 €**. Ces frais de dossier restent acquis à l'INFN quelle que soit l'issue de la candidature.\n\nPour le dépôt de votre dossier, vous pouvez contacter le site d'enseignement auprès duquel vous souhaitez postuler.",
+  "sources": [
+   "Frais de candidature et inscriptions",
+   "Frais de formation (tarifs 2026/2027)"
+  ],
+  "answered": true,
+  "sites": true,
+  "theme": "Tarifs et frais",
+  "ms": 1904,
+  "ttft": 1402
+ },
+ {
+  "q": "Les 150 € de candidature sont remboursés si je ne suis pas pris ?",
+  "a": "Non, d'après la page, les frais de candidature de 150 € restent acquis à l'INFN quelle que soit l'issue de la candidature. Ils ne sont donc pas remboursés en cas de refus.\n\nPour toute question complémentaire sur votre dossier, vous pouvez contacter directement le site d'enseignement auprès duquel vous candidatez.",
+  "sources": [
+   "Frais de formation (tarifs 2026/2027)"
+  ],
+  "answered": true,
+  "sites": true,
+  "theme": "Tarifs et frais",
+  "ms": 1976,
+  "ttft": 1464
+ },
+ {
+  "q": "c'est combien la formation dmn",
+  "a": "Le coût pédagogique de la formation DMN (cours + examen) est de **5 862,50 €** pour l'année 2026/2027.\n\nLes frais de candidature sont de 150 € (non remboursables), et les droits d'examen pour les candidats libres sont de 350 €.\n\nSi vous êtes salarié et que votre employeur finance la formation, une prise en charge par l'OPCO EP peut être possible, sous conditions (contrat de professionnalisation ou plan de développement des compétences).",
+  "sources": [
+   "Frais de formation (tarifs 2026/2027)",
+   "Rémunération"
+  ],
+  "answered": true,
+  "sites": true,
+  "theme": "Tarifs et frais",
+  "ms": 2317,
+  "ttft": 1544
+ },
+ {
+  "q": "Est-ce que je peux payer la formation en plusieurs fois ?",
+  "a": "Je n'ai pas cette information sur la page du DMN : elle ne précise pas de possibilité de paiement échelonné.\n\nCe que la page indique concernant les frais (tarifs 2026/2027) :\n- **Frais de candidature** : 150 €, non remboursables quelle que soit l'issue de la candidature.\n- **Coût pédagogique de la formation** (cours + examen) : 5 862,50 €.\n- **Droits d'examen** (candidats libres) : 350 €.\n\nLa page mentionne aussi une prise en charge possible par l'OPCO EP si votre employeur finance la formation, sous conditions. Pour savoir si un paiement en plusieurs fois est envisageable, le mieux est de contacter directement le site d'enseignement auprès duquel vous souhaitez postuler.",
+  "sources": [],
+  "answered": false,
+  "sites": true,
+  "theme": "Tarifs et frais",
+  "ms": 2534,
+  "ttft": 1466
+ },
+ {
+  "q": "Qui paie la formation, moi ou l'employeur ?",
+  "a": "Cela dépend du type de contrat que vous signez avec votre employeur :\n\n- **Contrat de professionnalisation** : le coût pédagogique est financé par l'employeur, et il peut bénéficier d'une prise en charge des frais pédagogiques par l'OPCO EP, sous conditions et dans la limite d'un plafond.\n- **Contrat de travail de droit commun** : la formation financée par l'employeur peut faire l'objet d'une prise en charge dans le cadre d'un plan de développement des compétences par l'OPCO-EP. D'autres dispositifs de financement existent également (CFP, transition professionnelle, etc.).\n\nPour connaître précisément votre situation et les critères de financement, je vous invite à consulter l'OPCO EP ou le site d'enseignement choisi.\n\nLe coût de la formation pour l'ensemble du cursus (cours + examen) est de 5 862,50 €, et les frais de candidature de 150 €.",
+  "sources": [
+   "Contacter les sites de l’INFN",
+   "Stage dans un office notarial",
+   "Frais de formation (tarifs 2026/2027)"
+  ],
+  "answered": true,
+  "sites": true,
+  "theme": "Financement et rémunération",
+  "ms": 2713,
+  "ttft": 1394
+ },
+ {
+  "q": "J'ai 28 ans, je peux faire un contrat de professionnalisation ?",
+  "a": "Le contrat de professionnalisation en CDI avec action de professionnalisation est réservé aux jeunes de moins de 26 ans, selon la page. Avec 28 ans, vous ne pouvez donc pas accéder à ce dispositif tel qu'indiqué sur la page.\n\nEn revanche, la page mentionne le **contrat de travail de droit commun** : la formation financée par l'employeur peut alors faire l'objet d'une prise en charge par l'OPCO EP dans le cadre d'un plan de développement des compétences, sous conditions. D'autres dispositifs de financement existent aussi, comme le CFP ou la transition professionnelle.\n\nPour connaître les critères précis de prise en charge, consultez le site de l'OPCO EP ou contactez le site d'enseignement de l'INFN auprès duquel vous souhaitez postuler.",
+  "sources": [
+   "Devenir collaborateur de notaire",
+   "Deux types d'embauche possibles"
+  ],
+  "answered": true,
+  "sites": true,
+  "theme": "Financement et rémunération",
+  "ms": 2004,
+  "ttft": 731
+ },
+ {
+  "q": "Quel salaire pendant l'alternance ?",
+  "a": "La rémunération pendant la formation est fixée par la Convention collective nationale du notariat. La page ne précise pas de montant ni de grille salariale.\n\nPour toute question sur votre futur salaire, vous pouvez vous rapprocher de l'office notarial qui vous emploie, ou contacter le site d'enseignement de l'INFN auprès duquel vous souhaitez postuler.",
+  "sources": [
+   "Stage dans un office notarial",
+   "Rémunération"
+  ],
+  "answered": false,
+  "sites": true,
+  "theme": "Financement et rémunération",
+  "ms": 1306,
+  "ttft": 688
+ },
+ {
+  "q": "Combien coûte le DMN ?",
+  "a": "Les tarifs 2026/2027 indiqués sur la page sont les suivants :\n\n- **Frais de candidature** : 150 €, acquis à l'INFN quelle que soit l'issue de la candidature.\n- **Coût pédagogique de l'ensemble de la formation (cours + examen)** : 5 862,50 €.\n- **Droits d'examen (candidats libres)** : 350 €.\n\nCe coût peut, sous conditions, être pris en charge par l'OPCO EP lorsque l'employeur finance la formation (contrat de professionnalisation ou plan de développement des compétences). Pour plus de détails, consultez les critères de financement de l'OPCO EP sur leur site.",
+  "sources": [
+   "Frais de formation (tarifs 2026/2027)",
+   "Documents à télécharger"
+  ],
+  "answered": true,
+  "sites": true,
+  "theme": "Tarifs et frais",
+  "ms": 4203,
+  "ttft": 3274
+ },
+ {
+  "q": "Est-ce que l'OPCO peut financer ma formation ?",
+  "a": "Oui, sous conditions. Selon la page du DMN, le coût pédagogique de la formation peut faire l'objet d'une prise en charge par l'OPCO EP :\n\n- **Dans le cadre d'un contrat de professionnalisation** : CDD de 12 mois ou CDI avec action de professionnalisation, débutant en même temps que la formation. Ce contrat est réservé aux jeunes de moins de 26 ans.\n- **Dans le cadre d'un plan de développement des compétences** : si votre situation ne permet pas le contrat de professionnalisation (par exemple si la condition d'âge n'est pas remplie, ou si vous êtes déjà salarié en CDI de droit commun sous certaines conditions).\n\nD'autres dispositifs existent aussi, comme le CFP ou la transition professionnelle. Pour les critères précis, consultez le site de l'OPCO EP, ou contactez le site d'enseignement auprès duquel vous souhaitez postuler.",
+  "sources": [
+   "Coût de formation",
+   "Le contrat de professionnalisation",
+   "Le contrat de travail de droit commun"
+  ],
+  "answered": true,
+  "sites": true,
+  "theme": "Financement et rémunération",
+  "ms": 2353,
+  "ttft": 871
+ },
+ {
+  "q": "Est-ce que je peux utiliser mon CPF pour le DMN ?",
+  "a": "Je n'ai pas d'information sur la page du DMN concernant l'utilisation du CPF (Compte personnel de formation) pour financer la formation.\n\nLes dispositifs de financement mentionnés sur la page sont :\n- Le **contrat de professionnalisation**, avec une prise en charge des frais pédagogiques par l'OPCO EP, sous conditions ;\n- Le **plan de développement des compétences** de l'OPCO EP, pour les salariés en CDI de droit commun, sous certaines conditions ;\n- D'autres dispositifs comme le **CFP** ou la **transition professionnelle**.\n\nPour savoir si votre CPF peut être mobilisé, je vous conseille de contacter directement le site d'enseignement de l'INFN auprès duquel vous souhaitez postuler, ou l'INFN via le [formulaire de contact](https://www.infn.fr/demande-informations/).",
+  "sources": [
+   "Coût, Candidatures et inscriptions",
+   "Deux types d'embauche possibles"
+  ],
+  "answered": false,
+  "sites": true,
+  "theme": "Financement et rémunération",
+  "ms": 2032,
+  "ttft": 718
+ },
+ {
+  "q": "Je suis déjà salariée en CDI dans une étude, comment financer le DMN ?",
+  "a": "Bonne nouvelle : la page mentionne un dispositif adapté à votre situation. Le contrat de professionnalisation est réservé aux moins de 26 ans, donc il ne s'applique pas à vous. En revanche, si vous êtes déjà salariée en CDI de droit commun, la formation financée par votre employeur peut être prise en charge par l'OPCO EP dans le cadre d'un **plan de développement des compétences**, sous certaines conditions.\n\nD'autres dispositifs existent également, comme le **CFP** ou la **transition professionnelle**, mais la page ne détaille pas leurs conditions.\n\nPour connaître les critères de financement, consultez le site de l'OPCO EP, et pour le détail de la fiche de financement employeur, vous pouvez vous référer au document « DMN - Fiche financement employeur 2026 » disponible sur la page. Le coût pédagogique total de la formation est de 5 862,50 €. Pour votre dossier et votre inscription, rapprochez-vous du site d'enseignement choisi.",
+  "sources": [
+   "Coût, Financement, Public concerné",
+   "Deux types d’embauche possibles"
+  ],
+  "answered": true,
+  "sites": true,
+  "theme": "Financement et rémunération",
+  "ms": 2625,
+  "ttft": 815
+ },
+ {
+  "q": "Combien je serai payé en tant que collaborateur rédacteur stagiaire ?",
+  "a": "La rémunération n'est pas précisée sur la page du DMN : elle est fixée par la Convention collective nationale du notariat, que je ne peux pas détailler ici. Je vous invite à consulter cette convention ou à vous rapprocher de l'office notarial qui vous embaucherait, qui pourra vous indiquer le montant applicable à votre situation.\n\nPour toute question sur le contrat ou la formation, vous pouvez aussi contacter le site d'enseignement choisi.",
+  "sources": [
+   "Stage dans un office notarial",
+   "Rémunération"
+  ],
+  "answered": false,
+  "sites": true,
+  "theme": "Financement et rémunération",
+  "ms": 1566,
+  "ttft": 753
+ },
+ {
+  "q": "Est-ce que je dois trouver moi-même mon office notarial ?",
+  "a": "La page indique que la formation étant en alternance, le candidat doit trouver un contrat de travail de 12 mois, en principe au sein d'un office notarial. Il revient donc bien au candidat de chercher son office, et les deux types de contrat possibles sont le contrat de professionnalisation et le contrat de travail de droit commun.\n\nPour les modalités précises de candidature et d'accompagnement dans cette recherche, je vous invite à contacter le site d'enseignement auprès duquel vous souhaitez postuler.",
+  "sources": [
+   "Condition d’admission",
+   "Stage dans un office notarial"
+  ],
+  "answered": true,
+  "sites": true,
+  "theme": "Stage et alternance",
+  "ms": 1739,
+  "ttft": 787
+ },
+ {
+  "q": "Quelles conditions pour entrer en DMN ?",
+  "a": "Pour entrer en DMN, la page indique les publics admis suivants :\n\n- Les titulaires d'une **Licence Professionnelle Métiers du Notariat**.\n- Tout titulaire d'une **Licence générale de Droit** (sans exigence sur la spécialité) ou d'un **Master de Droit**.\n- Une équivalence est aussi accordée aux titulaires d'autres **Licences Professionnelles en droit**, ou de parcours organisés autour de l'assistanat juridique, du métier de comptable taxateur d'études notariales, ou des carrières et métiers de l'immobilier.\n\nIl faut également trouver un contrat de travail de 12 mois, en principe au sein d'un office notarial, la formation étant organisée en alternance.\n\nPour les candidatures et inscriptions, il faut contacter directement le site d'enseignement choisi. Sur la page, les candidatures 2026 sont indiquées comme terminées.",
+  "sources": [
+   "Public concerné",
+   "Condition d’admission",
+   "Candidatures et inscriptions"
+  ],
+  "answered": true,
+  "sites": true,
+  "theme": "Admission et candidature",
+  "ms": 1881,
+  "ttft": 646
+ },
+ {
+  "q": "J'ai une licence de droit générale, je peux postuler ?",
+  "a": "Oui, la page indique que peut accéder à la formation tout titulaire d'une **Licence générale de Droit**, sans exigence sur la spécialité de cette licence.\n\nLes candidatures pour l'année 2026 sont en revanche terminées. Pour les démarches d'inscription ou de candidature, il faut contacter directement le site d'enseignement de l'INFN auprès duquel vous souhaitez postuler : vous pouvez le trouver sur la page [Sites d'enseignement](https://www.infn.fr/sites-enseignement/).",
+  "sources": [
+   "Public concerné",
+   "Candidatures 2026"
+  ],
+  "answered": true,
+  "sites": true,
+  "theme": "Admission et candidature",
+  "ms": 1572,
+  "ttft": 693
+ },
+ {
+  "q": "Comment trouver une étude notariale pour l'alternance ?",
+  "a": "La page du DMN indique que la formation est en alternance et qu'il faut trouver un contrat de travail de 12 mois, en principe au sein d'un office notarial. En revanche, elle ne décrit pas de méthode ou de plateforme pour trouver une étude notariale : je n'ai pas cette information sur la page du DMN.\n\nCe que la page précise, en revanche :\n- Le contrat peut être un **contrat de professionnalisation** (CDD de 12 mois ou CDI avec action de professionnalisation, réservé aux moins de 26 ans) ;\n- Ou un **contrat de travail de droit commun**, avec un financement possible via un plan de développement des compétences de l'OPCO EP.\n\nPour vous accompagner dans vos démarches de recherche, rapprochez-vous du site d'enseignement de l'INFN auprès duquel vous souhaitez postuler : [trouver mon site d'enseignement](https://www.infn.fr/sites-enseignement/).",
+  "sources": [
+   "Deux types d'embauche possibles",
+   "Condition d'admission"
+  ],
+  "answered": false,
+  "sites": true,
+  "theme": "Stage et alternance",
+  "ms": 2142,
+  "ttft": 855
+ },
+ {
+  "q": "Avec un BTS collaborateur juriste notarial je peux entrer directement en DMN ?",
+  "a": "Je n'ai pas cette information sur la page du DMN. La page indique que l'admission se fait avec une **licence professionnelle Métiers du notariat**, une **licence professionnelle en droit**, une **licence générale de droit** ou un **master de droit**, ainsi que certaines licences professionnelles équivalentes (assistanat juridique, comptable taxateur d'études notariales, carrières et métiers de l'immobilier). Le BTS n'y figure pas.\n\nPour savoir si votre BTS peut être pris en compte, le plus sûr est de contacter directement le site d'enseignement auprès duquel vous souhaitez candidater, via la liste disponible sur [Trouver mon site d'enseignement](https://www.infn.fr/sites-enseignement/).",
+  "sources": [
+   "Public concerné",
+   "Condition d’admission"
+  ],
+  "answered": false,
+  "sites": true,
+  "theme": "Admission et candidature",
+  "ms": 1875,
+  "ttft": 625
+ },
+ {
+  "q": "J'ai une licence pro métiers de l'immobilier, c'est accepté ?",
+  "a": "Les titulaires d'une Licence Professionnelle Métiers du Notariat, d'une licence générale de Droit (sans exigence de spécialité) ou d'un Master de Droit peuvent y accéder. Une équivalence est également accordée aux titulaires d'autres Licences Professionnelles en droit ou dont le parcours est organisé autour de l'assistanat juridique, de la comptabilité-taxation d'études notariales ou des carrières et métiers de l'immobilier.\n\nVotre licence professionnelle « Carrières et métiers de l'immobilier » fait donc partie des équivalences prévues. Pour confirmer votre éligibilité et déposer votre candidature, prenez contact directement avec le site d'enseignement auprès duquel vous souhaitez postuler.",
+  "sources": [
+   "Public concerné"
+  ],
+  "answered": true,
+  "sites": true,
+  "theme": "Admission et candidature",
+  "ms": 1910,
+  "ttft": 793
+ },
+ {
+  "q": "Les candidatures 2026 sont encore ouvertes ?",
+  "a": "Non, d'après la page, les candidatures pour l'année 2026 sont terminées.\n\nPour toute question sur l'inscription à une future session, vous pouvez contacter directement le site d'enseignement de l'INFN auprès duquel vous souhaitez postuler.",
+  "sources": [
+   "Devenir collaborateur de notaire",
+   "Candidatures et inscriptions"
+  ],
+  "answered": true,
+  "sites": true,
+  "theme": "Admission et candidature",
+  "ms": 1339,
+  "ttft": 870
+ },
+ {
+  "q": "Quand ouvrent les candidatures pour 2027 ?",
+  "a": "Je n'ai pas cette information sur la page du DMN. La page indique seulement que les candidatures pour l'année 2026 sont terminées, sans précision sur les dates d'ouverture pour 2027.\n\nJe vous invite à contacter directement le site d'enseignement auprès duquel vous souhaitez postuler, qui vous communiquera le calendrier des candidatures. Vous pouvez trouver les sites ici : [Trouver mon site d'enseignement](https://www.infn.fr/sites-enseignement/).",
+  "sources": [
+   "Candidatures et inscriptions",
+   "Où préparer mon DMN ?"
+  ],
+  "answered": false,
+  "sites": true,
+  "theme": "Admission et candidature",
+  "ms": 1550,
+  "ttft": 712
+ },
+ {
+  "q": "Comment candidater au DMN ?",
+  "a": "Pour candidater au DMN, il faut vous adresser directement au site d'enseignement de l'INFN auprès duquel vous souhaitez postuler : les candidatures et inscriptions s'effectuent auprès de ces sites.\n\nPoint important : **les candidatures pour l'année 2026 sont terminées**.\n\nPour connaître les modalités de dépôt du dossier et les étapes d'inscription, contactez le site de votre choix, ou [trouvez votre site d'enseignement ici](https://www.infn.fr/sites-enseignement/).",
+  "sources": [
+   "Candidatures et inscriptions",
+   "Condition d'admission"
+  ],
+  "answered": true,
+  "sites": true,
+  "theme": "Admission et candidature",
+  "ms": 1575,
+  "ttft": 686
+ },
+ {
+  "q": "J'ai un master de droit privé, est-ce que le DMN m'intéresse ?",
+  "a": "Oui, la page indique que le DMN est accessible aux titulaires d'un **Master de droit** : c'est l'un des publics concernés, au même titre que la Licence professionnelle Métiers du notariat et la Licence générale de droit.\n\nLe DMN vise à former des collaborateurs juristes rédacteurs d'actes, avec une formation essentiellement pratique sur 335 heures de cours et d'examens, couplée à une année de stage dans un office notarial. Les matières couvrent le droit des personnes et de la famille, le droit de l'immobilier, le droit de l'entreprise et le droit professionnel notarial.\n\nPour savoir si votre profil correspond précisément aux conditions d'admission et pour connaître les modalités de candidature, il vous faudra contacter le site d'enseignement de l'INFN auprès duquel vous souhaitez postuler. Vous pouvez les trouver sur [Trouver mon site d'enseignement](https://www.infn.fr/sites-enseignement/).",
+  "sources": [
+   "Public concerné",
+   "Candidatures et inscriptions",
+   "Objectifs"
+  ],
+  "answered": true,
+  "sites": true,
+  "theme": "Admission et candidature",
+  "ms": 2263,
+  "ttft": 726
+ },
+ {
+  "q": "Quelle est la date limite pour envoyer mon dossier ?",
+  "a": "Je n'ai pas de date limite de dépôt de dossier de candidature pour la rentrée suivante sur la page du DMN. Vous y trouverez seulement que les candidatures pour l'année 2026 sont terminées.\n\nPour connaître les dates de la prochaine session et les modalités de dépôt, contactez directement le site d'enseignement auprès duquel vous souhaitez postuler : vous pouvez les trouver via [Trouver mon site d'enseignement](https://www.infn.fr/sites-enseignement/).",
+  "sources": [
+   "Candidatures et inscriptions",
+   "Condition d’admission"
+  ],
+  "answered": false,
+  "sites": true,
+  "theme": "Admission et candidature",
+  "ms": 1484,
+  "ttft": 683
+ },
+ {
+  "q": "Combien de temps dure la formation ?",
+  "a": "La formation du Diplôme des métiers du notariat (DMN) dure **335 heures de cours et d'examens**. Elle débute chaque année fin septembre ou début octobre et se termine en septembre ou octobre de l'année civile suivante, avec les épreuves d'examen final.",
+  "sources": [
+   "Durée",
+   "Objectifs"
+  ],
+  "answered": true,
+  "sites": false,
+  "theme": "Programme et rythme",
+  "ms": 1159,
+  "ttft": 784
+ },
+ {
+  "q": "C'est combien d'heures de cours ?",
+  "a": "Le Diplôme des métiers du notariat comprend **335 heures de cours et d'examens** au total. Parmi celles-ci, la page indique **315 heures de cours** répartis entre quatre modules : droit des personnes et de la famille (98h), droit de l'immobilier (105h), droit de l'entreprise (77h) et droit professionnel notarial (35h).",
+  "sources": [
+   "Durée",
+   "Modules d'enseignement"
+  ],
+  "answered": true,
+  "sites": false,
+  "theme": "Programme et rythme",
+  "ms": 1229,
+  "ttft": 669
+ },
+ {
+  "q": "Quelles pièces faut-il dans le dossier de candidature ?",
+  "a": "Je n'ai pas cette information sur la page du DMN : la liste des pièces à fournir dans le dossier de candidature n'y figure pas.\n\nLes candidatures se font auprès du site d'enseignement de l'INFN choisi, qui vous indiquera les modalités de dépôt. Vous pouvez aussi consulter la **Notice de candidature 2026** disponible dans la rubrique « Documents à télécharger ». Notez que les candidatures pour l'année 2026 sont terminées.",
+  "sources": [
+   "Candidatures et inscriptions",
+   "Documents à télécharger"
+  ],
+  "answered": false,
+  "sites": true,
+  "theme": "Admission et candidature",
+  "ms": 1512,
+  "ttft": 714
+ },
+ {
+  "q": "Y a-t-il un entretien ou un test d'entrée ?",
+  "a": "La page ne mentionne pas d'entretien d'admission. En revanche, elle indique l'existence d'un **test d'autopositionnement en vue de l'entrée en DMN**, disponible en téléchargement dans la rubrique « Documents à télécharger ».\n\nPour savoir si un entretien ou un test est organisé dans le cadre de votre candidature, je vous invite à contacter directement le site d'enseignement auprès duquel vous souhaitez postuler. Les candidatures 2026 étant terminées, renseignez-vous aussi sur les modalités pour la prochaine session.",
+  "sources": [
+   "Condition d’admission",
+   "Documents à télécharger"
+  ],
+  "answered": true,
+  "sites": true,
+  "theme": "Admission et candidature",
+  "ms": 1595,
+  "ttft": 692
+ },
+ {
+  "q": "Quand commence la formation ?",
+  "a": "La formation débute chaque année **fin septembre / début octobre** et se termine en septembre / octobre de l'année civile suivante, avec les épreuves d'examen final.\n\nLes dates précises de rentrée dépendent du site d'enseignement choisi : je vous invite à contacter directement le site concerné.",
+  "sources": [
+   "Devenir collaborateur de notaire",
+   "Durée"
+  ],
+  "answered": true,
+  "sites": true,
+  "theme": "Programme et rythme",
+  "ms": 1394,
+  "ttft": 849
+ },
+ {
+  "q": "Les cours c'est une journée par semaine ou des semaines entières ?",
+  "a": "Cela dépend du site d'enseignement : certains ont opté pour une journée de cours par semaine, d'autres ont préféré regrouper les cours sur des semaines entières. Le volume global reste de 335 heures de cours et d'examens, mais l'organisation exacte est fixée par chaque site. Je vous invite donc à contacter directement le site d'enseignement choisi pour connaître ses modalités.",
+  "sources": [
+   "Comment s’articule l’emploi du temps ?"
+  ],
+  "answered": true,
+  "sites": true,
+  "theme": "Programme et rythme",
+  "ms": 1309,
+  "ttft": 576
+ },
+ {
+  "q": "Est-ce qu'il y a du droit de l'urbanisme au programme ?",
+  "a": "Oui, le droit de l'urbanisme fait partie du programme. Il est traité dans le **Module 2 - Droit de l'immobilier (105h)**, avec notamment :\n\n- Le droit de préemption, les documents d'urbanisme et les opérations d'aménagement urbain\n\nSi vous souhaitez davantage de détails sur le contenu ou l'organisation de ces cours, il vaut mieux interroger directement le site d'enseignement choisi.",
+  "sources": [
+   "Modules d'enseignement"
+  ],
+  "answered": true,
+  "sites": true,
+  "theme": "Programme et rythme",
+  "ms": 1388,
+  "ttft": 694
+ },
+ {
+  "q": "Combien d'heures de droit de la famille ?",
+  "a": "Le module « Droits des personnes et de la famille » compte **98 heures** de cours, sur un total de 315 heures de cours répartis en quatre modules (la page indique par ailleurs 335 heures de cours et d'examens au total).\n\nLes thèmes abordés incluent notamment les régimes matrimoniaux, le couple hors mariage (union libre, PACS), le divorce, les incapacités, la filiation, la fiscalité du droit de la famille, ainsi que la liquidation-partage et les libéralités.",
+  "sources": [
+   "Modules d'enseignement"
+  ],
+  "answered": true,
+  "sites": false,
+  "theme": "Programme et rythme",
+  "ms": 1753,
+  "ttft": 964
+ },
+ {
+  "q": "Peut-on faire le DMN à distance ?",
+  "a": "Je n'ai pas d'information sur la page du DMN concernant une formation entièrement à distance. La page indique que la formation est organisée en alternance avec un stage de 12 mois en office notarial, et que chaque site d'enseignement définit son emploi du temps (certains sites regroupent les cours sur une journée par semaine, d'autres sur une semaine entière).\n\nPour savoir si des modalités à distance sont possibles, je vous invite à contacter directement le site d'enseignement de l'INFN auprès duquel vous souhaitez postuler.",
+  "sources": [
+   "Modules d'enseignement",
+   "Comment s'articule l'emploi du temps ?"
+  ],
+  "answered": false,
+  "sites": true,
+  "theme": "Programme et rythme",
+  "ms": 1760,
+  "ttft": 760
+ },
+ {
+  "q": "Quel est le programme du DMN ?",
+  "a": "Le DMN comprend 315 heures de cours, réparties en quatre modules d'enseignement :\n\n- **Module 1 - Droits des personnes et de la famille (98 h)** : régimes matrimoniaux, couple hors mariage (union libre, PACS), divorce, incapacités, filiation, fiscalité du droit de la famille, liquidation-partage et libéralités.\n- **Module 2 - Droit de l'immobilier (105 h)** : droit rural, droit de l'urbanisme, droit public immobilier, opérations de construction et de rénovation, mise en copropriété, vente en l'état, baux à construction et crédit-bail, sûretés et crédit, fiscalité immobilière et du patrimoine.\n- **Module 3 - Droit de l'entreprise (77 h)** : statut de l'entrepreneur individuel, groupements civils et commerciaux, bail commercial, transmission de l'entreprise (cessions, transmissions à titre gratuit, entreprises en difficulté, vente de fonds de commerce et location-gérance).\n- **Module 4 - Droit professionnel notarial (35 h)** : authenticité, organisation de la profession, déontologie et pratiques professionnelles, tarif et taxation des actes.\n\nPour l'organisation précise de l'emploi du temps, rapprochez-vous du site d'enseignement choisi.",
+  "sources": [
+   "Modules d'enseignement",
+   "Durée"
+  ],
+  "answered": true,
+  "sites": true,
+  "theme": "Programme et rythme",
+  "ms": 2271,
+  "ttft": 724
+ },
+ {
+  "q": "Les cours sont en présentiel ?",
+  "a": "La page ne précise pas explicitement si les cours sont en présentiel. Elle indique seulement que le volume horaire global de 335 heures est organisé selon un emploi du temps établi par chaque site d'enseignement : certains sites proposent une journée de cours par semaine, d'autres regroupent les cours sur des semaines entières.\n\nPour connaître les modalités exactes (présentiel ou autre), je vous invite à contacter directement le site d'enseignement choisi, via [Trouver mon site d'enseignement](https://www.infn.fr/sites-enseignement/).",
+  "sources": [
+   "Durée",
+   "Comment s’articule l’emploi du temps ?"
+  ],
+  "answered": false,
+  "sites": true,
+  "theme": "Programme et rythme",
+  "ms": 1770,
+  "ttft": 1139
+ },
+ {
+  "q": "Il y a combien d'épreuves écrites ?",
+  "a": "Il y a **2 épreuves écrites** à l'examen final, de 4 heures chacune. Elles portent sur 2 des 3 matières suivantes : droit de la famille, droit de l'immobilier et droit de l'entreprise. Chaque épreuve est notée sur 20 avec un coefficient 3.",
+  "sources": [
+   "Examen final"
+  ],
+  "answered": true,
+  "sites": false,
+  "theme": "Examen et validation",
+  "ms": 1079,
+  "ttft": 662
+ },
+ {
+  "q": "Comment se passe l'examen final ?",
+  "a": "L'examen final du DMN se déroule chaque année au mois de septembre, et il faut justifier d'une pratique professionnelle d'un an en office notarial pour s'y présenter. Il comprend deux phases :\n\n- **Phase écrite** : 2 épreuves de 4 heures portant sur deux des trois matières (Droit de la famille, Droit de l'immobilier, Droit de l'entreprise), chacune notée sur 20 avec un coefficient 3. L'admissibilité est acquise par la moyenne entre le contrôle continu et les deux épreuves écrites.\n- **Phase orale** : 2 interrogations de 20 minutes devant un jury, l'une sur la matière non traitée à l'écrit (coefficient 3), l'autre sur le droit professionnel notarial (coefficient 2).\n\nUne épreuve facultative de langue vivante, notée de 0 à 10, peut aussi compléter les notes orales, dans la limite de 2 points au-dessus de la moyenne.",
+  "sources": [
+   "Examen final"
+  ],
+  "answered": true,
+  "sites": true,
+  "theme": "Examen et validation",
+  "ms": 1868,
+  "ttft": 654
+ },
+ {
+  "q": "Les notes de contrôle continu sont gardées combien de temps ?",
+  "a": "Les notes du contrôle continu sont validées pour 3 ans. Si vous n'avez pas validé votre année de formation et que vous vous présentez ensuite en candidat libre, ces notes restent donc valables pendant cette période.",
+  "sources": [
+   "Que se passe-t-il en cas d’échec à l’examen ?"
+  ],
+  "answered": true,
+  "sites": false,
+  "theme": "Examen et validation",
+  "ms": 1141,
+  "ttft": 743
+ },
+ {
+  "q": "Que se passe-t-il si je rate l'examen ?",
+  "a": "Si vous ratez l'examen final, cela dépend de votre situation pendant l'année :\n\n- **Si vous avez validé votre année de formation** (c'est-à-dire obtenu la moyenne au contrôle continu) : vous pourrez vous représenter en candidat libre à une prochaine session. Les notes du contrôle continu sont validées pour 3 ans.\n- **Si vous n'avez pas validé votre année** (faute d'avoir obtenu la moyenne au contrôle continu) : vous devez redoubler l'année, suivre à nouveau les enseignements et satisfaire aux épreuves du contrôle continu.\n\nPour votre situation précise, n'hésitez pas à contacter le site d'enseignement auprès duquel vous êtes inscrit ou souhaitez vous inscrire.",
+  "sources": [
+   "Que se passe-t-il en cas d'échec à l'examen ?"
+  ],
+  "answered": true,
+  "sites": true,
+  "theme": "Examen et validation",
+  "ms": 1684,
+  "ttft": 605
+ },
+ {
+  "q": "Il y a une épreuve de langue ?",
+  "a": "Oui, il existe une épreuve facultative de langue vivante. Elle est notée de 0 à 10 et proposée aux candidats lors de l'examen final : ils peuvent compléter les notes des épreuves orales d'admission, dans la limite de 2 points au-dessus de la moyenne.\n\nPour les modalités précises de cette épreuve, je vous invite à contacter le site d'enseignement choisi.",
+  "sources": [
+   "Examen final"
+  ],
+  "answered": true,
+  "sites": true,
+  "theme": "Examen et validation",
+  "ms": 1255,
+  "ttft": 688
+ },
+ {
+  "q": "Combien d'inscrits dans la promotion actuelle ?",
+  "a": "La page indique 690 inscrits pour la promotion 2025-2026, qui est la promotion en cours. Vous trouverez également les chiffres des promotions précédentes : 938 inscrits en 2023-2024 et 571 en 2024-2025.",
+  "sources": [
+   "Statistiques nationales",
+   "Chiffres clés de la promotion 2025-2026"
+  ],
+  "answered": true,
+  "sites": false,
+  "theme": "Chiffres clés",
+  "ms": 1134,
+  "ttft": 640
+ },
+ {
+  "q": "Quel est le taux de réussite au DMN ?",
+  "a": "Les taux de réussite nationaux indiqués sur la page du DMN sont les suivants :\n\n- **2023** : 46 % (taux de réussite à la session d'examen et taux d'obtention de la certification)\n- **2024** : 53 %\n- **2025** : 52 %",
+  "sources": [
+   "Statistiques nationales"
+  ],
+  "answered": true,
+  "sites": false,
+  "theme": "Chiffres clés",
+  "ms": 1251,
+  "ttft": 666
+ },
+ {
+  "q": "Est-ce qu'il y a un rattrapage ?",
+  "a": "Oui, la page prévoit une possibilité de se représenter, mais avec une distinction selon le résultat du contrôle continu :\n\n- **Si la moyenne au contrôle continu est obtenue** : l'année est validée et le candidat peut se représenter en candidat libre à une prochaine session. Les notes du contrôle continu sont valables 3 ans.\n- **Si la moyenne au contrôle continu n'est pas obtenue** : le candidat doit redoubler l'année, suivre à nouveau les enseignements et repasser les épreuves du contrôle continu.\n\nPour votre situation précise, vous pouvez contacter le site d'enseignement concerné.",
+  "sources": [
+   "Examen final",
+   "Que se passe-t-il en cas d'échec à l'examen ?"
+  ],
+  "answered": true,
+  "sites": true,
+  "theme": "Examen et validation",
+  "ms": 1807,
+  "ttft": 836
+ },
+ {
+  "q": "Quel est le taux d'abandon ?",
+  "a": "Le taux d'abandon indiqué sur la page du DMN est de **5,32 %** (année 2025).",
+  "sources": [
+   "Chiffres clés de la promotion 2025-2026",
+   "Statistiques nationales"
+  ],
+  "answered": true,
+  "sites": false,
+  "theme": "Chiffres clés",
+  "ms": 875,
+  "ttft": 648
+ },
+ {
+  "q": "Quel est le taux d'insertion après le DMN ?",
+  "a": "Le taux d'insertion professionnelle du DMN est de **56,13 %** (chiffre de 2025), selon la page du Diplôme des métiers du notariat.\n\nPour plus de détails sur les débouchés, vous pouvez consulter les métiers visés (juriste rédacteur d'actes, juriste rédacteur spécialisé) sur la page.",
+  "sources": [
+   "Statistiques nationales",
+   "Débouchés et poursuite d’études"
+  ],
+  "answered": true,
+  "sites": false,
+  "theme": "Chiffres clés",
+  "ms": 1259,
+  "ttft": 682
+ },
+ {
+  "q": "Les étudiants sont satisfaits de la formation ?",
+  "a": "Oui, les données de la page indiquent un bon niveau de satisfaction pour la promotion 2024 (sur la base d'un échantillonnage) :\n\n- **83 %** des stagiaires s'estiment satisfaits de la formation.\n- **82 %** s'estiment satisfaits de la qualité et du contenu de la formation.\n- **81 %** considèrent que la formation est en adéquation avec la pratique professionnelle.\n\nPour plus de détails sur l'expérience d'un site en particulier, vous pouvez contacter directement le site d'enseignement choisi.",
+  "sources": [
+   "Statistiques nationales",
+   "Chiffres clés de la promotion 2023-2024"
+  ],
+  "answered": true,
+  "sites": true,
+  "theme": "Chiffres clés",
+  "ms": 1510,
+  "ttft": 845
+ },
+ {
+  "q": "Est-ce que le DMN permet de devenir notaire ?",
+  "a": "Non, le DMN ne permet pas à lui seul de devenir notaire. Il sanctionne une quatrième année de formation qui conduit au titre de **Collaborateur juriste notarial** (enregistré au RNCP, niveau 6).\n\nPour accéder aux fonctions de notaire, il faut ensuite réussir l'examen de contrôle de connaissances techniques (ECCT), dont la réussite permet d'obtenir le **certificat d'aptitude aux fonctions de notaire**.",
+  "sources": [
+   "Poursuite d’études",
+   "Objectifs"
+  ],
+  "answered": true,
+  "sites": false,
+  "theme": "Débouchés et métiers",
+  "ms": 1377,
+  "ttft": 704
+ },
+ {
+  "q": "Après le DMN je peux passer l'ECCT ?",
+  "a": "Oui, c'est prévu : la page indique qu'après l'obtention du Diplôme des métiers du notariat, il est possible de présenter l'examen de contrôle de connaissances techniques (ECCT). Sa réussite permet la délivrance du « certificat d'aptitude aux fonctions de notaire ».\n\nPour les conditions d'inscription à l'ECCT, je n'ai pas le détail sur la page du DMN. Le site d'enseignement choisi pourra vous renseigner.",
+  "sources": [
+   "Poursuite d’études"
+  ],
+  "answered": true,
+  "sites": true,
+  "theme": "Débouchés et métiers",
+  "ms": 1428,
+  "ttft": 698
+ },
+ {
+  "q": "Le DMN c'est quel niveau de diplôme ?",
+  "a": "Le Diplôme des métiers du notariat (DMN) est enregistré au RNCP au **niveau 6**, qui est le plus haut niveau de formation de collaborateur. Il sanctionne une quatrième année destinée à compléter la Licence Professionnelle Métiers du Notariat ou un cursus équivalent, et confère le titre de **Collaborateur juriste notarial**.",
+  "sources": [
+   "Objectifs"
+  ],
+  "answered": true,
+  "sites": false,
+  "theme": "Reconnaissance du diplôme",
+  "ms": 1230,
+  "ttft": 598
+ },
+ {
+  "q": "Quels métiers après le DMN ?",
+  "a": "Après le DMN, les titulaires peuvent accéder à des fonctions de **rédacteur d'actes** : ils participent à la rédaction des actes, rassemblent les pièces administratives nécessaires et suivent les dossiers avec les clients.\n\nIls peuvent intervenir sur des dossiers en lien avec :\n- **le droit immobilier** (ventes, baux, échanges…)\n- **le droit de la famille** (contrats de mariage, PACS, successions, divorces…)\n- **le droit de l'entreprise** (cessions de fonds de commerce, constitutions de sociétés, transmissions d'entreprise…)\n\nAvec l'expérience, le diplômé peut évoluer vers davantage de responsabilités, voire recevoir les clients et prendre un rôle de management d'équipe. Certains choisissent aussi de passer l'examen ECCT pour accéder au certificat d'aptitude aux fonctions de notaire.",
+  "sources": [
+   "Objectifs",
+   "Débouchés et poursuite d'études"
+  ],
+  "answered": true,
+  "sites": false,
+  "theme": "Débouchés et métiers",
+  "ms": 1964,
+  "ttft": 610
+ },
+ {
+  "q": "Le diplôme est reconnu par l'État ?",
+  "a": "Oui, la page indique que le diplôme est enregistré au RNCP (Répertoire national des certifications professionnelles), au niveau 6, en tant que titre de Collaborateur juriste notarial. Elle précise aussi que la formation est encadrée par le décret n°73-609 du 5 juillet 1973, et que son programme et ses modalités d'examen ont été approuvés par le garde des Sceaux, Ministre de la Justice, le 13 novembre 2008.",
+  "sources": [
+   "Objectifs"
+  ],
+  "answered": true,
+  "sites": false,
+  "theme": "Reconnaissance du diplôme",
+  "ms": 1619,
+  "ttft": 751
+ },
+ {
+  "q": "Le DMN est-il reconnu à l'étranger ?",
+  "a": "Je n'ai pas cette information sur la page du DMN : elle ne mentionne aucune reconnaissance du diplôme à l'étranger.\n\nCe que la page indique, c'est que le DMN est enregistré au RNCP (niveau 6), ce qui correspond à une reconnaissance nationale. Pour savoir si le diplôme est reconnu dans un autre pays, le plus sûr est de vous adresser au siège de l'INFN via le [formulaire de contact](https://www.infn.fr/demande-informations/), ou au site d'enseignement qui vous intéresse.",
+  "sources": [
+   "Objectifs",
+   "Contacter le siège"
+  ],
+  "answered": false,
+  "sites": true,
+  "theme": "Reconnaissance du diplôme",
+  "ms": 1536,
+  "ttft": 629
+ },
+ {
+  "q": "Où peut-on préparer le DMN ?",
+  "a": "Le DMN se prépare dans les sites d'enseignement de l'INFN suivants :\n\n- Aix-en-Provence\n- Bordeaux\n- Clermont-Ferrand\n- Dijon\n- Lille\n- Lyon\n- Montpellier\n- Nantes\n- Nîmes\n- Paris\n- Poitiers\n- Rennes\n- Rouen\n- Strasbourg\n- Toulouse\n- Territoires ultramarins\n\nPour trouver le site le plus proche de chez vous, consultez [la liste des sites d'enseignement](https://www.infn.fr/sites-enseignement/). Les candidatures et inscriptions se font directement auprès du site choisi.",
+  "sources": [
+   "Où préparer mon DMN ?",
+   "Candidatures et inscriptions"
+  ],
+  "answered": true,
+  "sites": true,
+  "theme": "Sites et contact",
+  "ms": 1544,
+  "ttft": 699
+ },
+ {
+  "q": "Je peux faire le DMN à Nancy ?",
+  "a": "Je n'ai pas d'information sur un site d'enseignement à Nancy dans la page du Diplôme des métiers du notariat. Les sites proposant cette formation sont notamment Aix-en-Provence, Bordeaux, Clermont-Ferrand, Dijon, Lille, Lyon, Montpellier, Nantes, Nîmes, Paris, Poitiers, Rennes, Rouen, Strasbourg et Toulouse, ainsi que les territoires ultramarins.\n\nVous pouvez consulter la liste complète sur la page [Sites d'enseignement](https://www.infn.fr/sites-enseignement/) ou prendre contact avec le site de votre choix pour vérifier s'il existe une possibilité proche de Nancy.",
+  "sources": [
+   "Où préparer mon DMN ?"
+  ],
+  "answered": false,
+  "sites": true,
+  "theme": "Sites et contact",
+  "ms": 1684,
+  "ttft": 660
+ },
+ {
+  "q": "Il y a un INFN à Marseille ?",
+  "a": "Je n'ai pas cette information sur la page du DMN. La liste des sites d'enseignement de l'INFN présents sur la page comprend Aix-en-Provence, Bordeaux, Clermont-Ferrand, Dijon, Lille, Lyon, Montpellier, Nantes, Nîmes, Paris, Poitiers, Rennes, Rouen, Strasbourg, Toulouse, ainsi que les territoires ultramarins, mais Marseille n'y figure pas.\n\nVous pouvez consulter la page [Trouver mon site d'enseignement](https://www.infn.fr/sites-enseignement/) ou contacter le siège via le [formulaire de contact](https://www.infn.fr/demande-informations/) pour vérifier.",
+  "sources": [
+   "Où préparer mon DMN ?"
+  ],
+  "answered": false,
+  "sites": true,
+  "theme": "Sites et contact",
+  "ms": 1704,
+  "ttft": 790
+ },
+ {
+  "q": "Je vis en Guadeloupe, c'est possible ?",
+  "a": "Je n'ai pas d'information précise sur la page du DMN concernant une formation en Guadeloupe. La page mentionne en revanche des « Territoires ultramarins » parmi les lieux où préparer le DMN, sans détailler les sites concernés ni les modalités.\n\nPour savoir si une formation est accessible depuis la Guadeloupe et dans quelles conditions, je vous invite à contacter directement le siège de l'INFN via le [formulaire de contact](https://www.infn.fr/demande-informations/), ou à consulter la liste des sites sur la [page des sites d'enseignement](https://www.infn.fr/sites-enseignement/).",
+  "sources": [
+   "Où préparer mon DMN ?"
+  ],
+  "answered": false,
+  "sites": true,
+  "theme": "Sites et contact",
+  "ms": 1883,
+  "ttft": 796
+ },
+ {
+  "q": "Comment contacter l'INFN de Lyon ?",
+  "a": "Le site d'enseignement de Lyon est l'**INFN Lyon**. Vous trouverez ses coordonnées sur sa page dédiée : [INFN Lyon](https://www.infn.fr/sites-enseignement/infn-lyon/). Pour toute question de scolarité, de candidature ou d'inscription, le plus simple est de contacter directement ce site.\n\nJe n'ai pas le numéro de téléphone ni l'adresse e-mail du site de Lyon sur la page du DMN.",
+  "sources": [
+   "Où préparer mon DMN ?"
+  ],
+  "answered": false,
+  "sites": true,
+  "theme": "Sites et contact",
+  "ms": 1638,
+  "ttft": 741
+ },
+ {
+  "q": "Quel est le numéro de téléphone de l'INFN Paris ?",
+  "a": "Je n'ai pas le numéro de téléphone de l'INFN Paris sur la page du DMN. Vous pouvez retrouver les coordonnées du site parisien via la page [Trouver mon site d'enseignement](https://www.infn.fr/sites-enseignement/), ou nous écrire via le [formulaire de contact](https://www.infn.fr/demande-informations/).",
+  "sources": [
+   "Où préparer mon DMN ?",
+   "Contacter les sites d'enseignement"
+  ],
+  "answered": false,
+  "sites": true,
+  "theme": "Sites et contact",
+  "ms": 1302,
+  "ttft": 662
+ },
+ {
+  "q": "Est-ce qu'il y a une cantine sur le site de Lille ?",
+  "a": "Je n'ai pas cette information sur la page du DMN. Pour savoir s'il existe une cantine sur le site de Lille, je vous invite à contacter directement le site d'enseignement concerné via la page dédiée : [INFN Lille](https://www.infn.fr/sites-enseignement/lille/).",
+  "sources": [
+   "Où préparer mon DMN ?"
+  ],
+  "answered": false,
+  "sites": true,
+  "theme": "Sites et contact",
+  "ms": 1189,
+  "ttft": 691
+ },
+ {
+  "q": "Y a-t-il un logement étudiant à Bordeaux ?",
+  "a": "Je n'ai pas cette information sur la page du Diplôme des métiers du notariat : la page ne traite pas du logement étudiant à Bordeaux.\n\nPour vous renseigner, le plus simple est de contacter directement le site d'enseignement de Bordeaux, qui pourra vous orienter. Vous pouvez le trouver ici : [INFN Bordeaux](https://www.infn.fr/sites-enseignement/bordeaux/).",
+  "sources": [],
+  "answered": false,
+  "sites": true,
+  "theme": "Sites et contact",
+  "ms": 1641,
+  "ttft": 759
+ },
+ {
+  "q": "Il y a un parking à l'INFN de Nantes ?",
+  "a": "Je n'ai pas cette information sur la page du DMN. Pour savoir s'il existe un parking au site de Nantes, je vous invite à contacter directement le site d'enseignement concerné via [Trouver mon site d'enseignement](https://www.infn.fr/sites-enseignement/).",
+  "sources": [
+   "Où préparer mon DMN ?"
+  ],
+  "answered": false,
+  "sites": true,
+  "theme": "Sites et contact",
+  "ms": 1401,
+  "ttft": 860
+ },
+ {
+  "q": "Est-ce que je peux faire le DMN par VAE ?",
+  "a": "Je n'ai pas d'information sur la validation des acquis de l'expérience (VAE) pour le DMN sur cette page. Vous pouvez en revanche consulter les conditions d'admission (licence professionnelle Métiers du notariat, licences professionnelles en droit, L3 droit, master de droit) et les candidatures, qui se font auprès du site d'enseignement de l'INFN de votre choix. Pour savoir si une VAE est envisageable dans votre cas, je vous invite à contacter directement le site d'enseignement concerné ou le siège de l'INFN via le [formulaire de contact](https://www.infn.fr/demande-informations/).\n\n**Sources : Public concerné | Condition d'admission**",
+  "sources": [],
+  "answered": false,
+  "sites": true,
+  "theme": "VAE et expérience",
+  "ms": 1746,
+  "ttft": 677
+ },
+ {
+  "q": "Combien d'étudiants par classe ?",
+  "a": "Je n'ai pas cette information sur la page du DMN : le nombre d'étudiants par classe n'y figure pas.\n\nLa page indique seulement le nombre d'inscrits par promotion (938 en 2023-2024, 571 en 2024-2025 et 690 en 2025-2026), à l'échelle de l'ensemble de la formation. Pour connaître les effectifs d'un groupe ou d'un site en particulier, le mieux est de contacter directement le site d'enseignement qui vous intéresse via [Trouver mon site d'enseignement](https://www.infn.fr/sites-enseignement/).",
+  "sources": [
+   "Chiffres clés de la promotion 2025-2026",
+   "Où préparer mon DMN ?"
+  ],
+  "answered": false,
+  "sites": true,
+  "theme": "Chiffres clés",
+  "ms": 2095,
+  "ttft": 1187
+ },
+ {
+  "q": "Est-ce adapté aux personnes en situation de handicap ?",
+  "a": "Je n'ai pas d'information sur l'accessibilité de la formation aux personnes en situation de handicap sur la page du DMN.\n\nPour cette question, je vous conseille de contacter directement le site d'enseignement où vous souhaitez suivre la formation, qui pourra vous renseigner sur les aménagements possibles. Vous pouvez trouver les coordonnées de chaque site ici : [Trouver mon site d'enseignement](https://www.infn.fr/sites-enseignement/), ou transmettre votre question via le [formulaire de contact](https://www.infn.fr/demande-informations/) de l'INFN.",
+  "sources": [
+   "Contacter les sites d'enseignement",
+   "Où préparer mon DMN ?"
+  ],
+  "answered": false,
+  "sites": true,
+  "theme": "Admission et candidature",
+  "ms": 1622,
+  "ttft": 626
+ },
+ {
+  "q": "Peut-on visiter l'école avant de s'inscrire ?",
+  "a": "Je n'ai pas cette information sur la page du DMN : elle ne mentionne pas de visite de locaux ni de journée portes ouvertes.\n\nPour savoir si une visite est possible, le plus simple est de contacter directement le site d'enseignement qui vous intéresse, la page vous permet de [trouver votre site d'enseignement](https://www.infn.fr/sites-enseignement/). Vous pouvez aussi utiliser le [formulaire de contact](https://www.infn.fr/demande-informations/) de l'INFN.",
+  "sources": [
+   "Où préparer mon DMN ?",
+   "Candidatures et inscriptions"
+  ],
+  "answered": false,
+  "sites": true,
+  "theme": "Admission et candidature",
+  "ms": 1679,
+  "ttft": 695
+ },
+ {
+  "q": "J'ai 10 ans d'expérience en étude, je peux avoir le diplôme sans la formation ?",
+  "a": "Je n'ai pas cette information sur la page du DMN : elle ne mentionne pas de dispense de formation fondée sur l'expérience professionnelle.\n\nEn revanche, la page indique que l'accès au DMN concerne les titulaires d'une Licence Professionnelle Métiers du Notariat, d'une licence générale de droit (sans exigence de spécialité), d'un Master de droit, ou de certaines autres licences professionnelles en droit ou dans des domaines connexes (assistanat juridique, comptable taxateur d'études notariales, carrières et métiers de l'immobilier).\n\nPour savoir si votre expérience peut être prise en compte, je vous invite à contacter directement le site d'enseignement de l'INFN auprès duquel vous souhaitez candidater, ou à utiliser le [formulaire de contact du siège](https://www.infn.fr/demande-informations/).",
+  "sources": [
+   "Public concerné",
+   "Candidatures et inscriptions"
+  ],
+  "answered": false,
+  "sites": true,
+  "theme": "VAE et expérience",
+  "ms": 2146,
+  "ttft": 831
+ },
+ {
+  "q": "Quand sont les journées portes ouvertes ?",
+  "a": "Je n'ai pas cette information sur la page du Diplôme des métiers du notariat. Les dates des journées portes ouvertes dépendent de chaque site d'enseignement de l'INFN, je vous invite donc à contacter directement le site qui vous intéresse via la page [Sites d'enseignement](https://www.infn.fr/sites-enseignement/) ou à utiliser le [formulaire de contact](https://www.infn.fr/demande-informations/).",
+  "sources": [
+   "Où préparer mon DMN ?",
+   "Contacter les sites d'enseignement"
+  ],
+  "answered": false,
+  "sites": true,
+  "theme": "Admission et candidature",
+  "ms": 1483,
+  "ttft": 700
+ },
+ {
+  "q": "Est-ce que le stage peut se faire dans un cabinet d'avocat ?",
+  "a": "Je n'ai pas cette information sur la page du DMN. La page indique que la formation est en alternance et que le candidat doit trouver un contrat de travail de 12 mois, en principe au sein d'un office notarial. Elle ne mentionne pas la possibilité d'effectuer cette période dans un cabinet d'avocats.\n\nPour vérifier ce point, je vous invite à contacter directement le site d'enseignement qui vous intéresse via [Trouver mon site d'enseignement](https://www.infn.fr/sites-enseignement/).",
+  "sources": [
+   "Stage dans un office notarial",
+   "Deux types d'embauche possibles"
+  ],
+  "answered": false,
+  "sites": true,
+  "theme": "Stage et alternance",
+  "ms": 1656,
+  "ttft": 820
+ },
+ {
+  "q": "Où trouver le guide de formation ?",
+  "a": "Vous trouverez le **Guide de formation du Diplôme des Métiers du Notariat (DMN) 2026** dans la section « Documents à télécharger » de la page du DMN.\n\nSi vous ne parvenez pas à y accéder, vous pouvez aussi contacter le siège de l'INFN via le [formulaire de contact](https://www.infn.fr/demande-informations/).",
+  "sources": [
+   "Documents à télécharger",
+   "Navigation"
+  ],
+  "answered": true,
+  "sites": true,
+  "theme": "Sites et contact",
+  "ms": 1223,
+  "ttft": 658
+ },
+ {
+  "q": "Est-ce que je peux travailler à temps partiel à côté ?",
+  "a": "La page du DMN ne précise pas la possibilité de travailler à temps partiel pendant la formation. Elle indique seulement que la formation est en alternance : le candidat doit trouver un contrat de travail de 12 mois, en principe au sein d'un office notarial, et les étudiants travaillent à l'office du lundi au vendredi, hormis les jours de formation fixés par le site d'enseignement.\n\nPour savoir si un temps partiel est envisageable dans votre cas, je vous invite à contacter directement le site d'enseignement auprès duquel vous souhaitez postuler : [Trouver mon site d'enseignement](https://www.infn.fr/sites-enseignement/).",
+  "sources": [
+   "Condition d’admission",
+   "Stage dans un office notarial",
+   "Présence à l’étude notariale"
+  ],
+  "answered": false,
+  "sites": true,
+  "theme": "Stage et alternance",
+  "ms": 1518,
+  "ttft": 615
+ },
+ {
+  "q": "Quelle différence entre le DMN et le DESN ?",
+  "a": "Je n'ai pas cette information sur la page du DMN : elle ne mentionne pas le DESN et ne permet donc pas de comparer les deux diplômes.\n\nPour une comparaison, je vous invite à contacter directement l'[INFN](https://www.infn.fr/demande-informations/) via le formulaire de contact, ou à vous renseigner auprès du site d'enseignement de votre choix.",
+  "sources": [],
+  "answered": false,
+  "sites": true,
+  "theme": "Reconnaissance du diplôme",
+  "ms": 1645,
+  "ttft": 908
+ },
+ {
+  "q": "Je peux faire le DMN en étant à l'étranger ?",
+  "a": "Je n'ai pas cette information sur la page du DMN : elle ne précise pas les modalités pour suivre la formation depuis l'étranger.\n\nCe que la page indique : la formation est en alternance, avec des cours et examens (335 heures), et elle suppose de trouver un contrat de 12 mois, en principe dans un office notarial. Les cours sont organisés par chaque site d'enseignement.\n\nPour savoir si une formation à distance ou depuis l'étranger est envisageable, je vous invite à contacter directement le site d'enseignement qui vous intéresse via la [page des sites d'enseignement](https://www.infn.fr/sites-enseignement/).",
+  "sources": [
+   "Durée",
+   "Stage dans un office notarial",
+   "Présence en cours"
+  ],
+  "answered": false,
+  "sites": true,
+  "theme": "Programme et rythme",
+  "ms": 2001,
+  "ttft": 773
+ },
+ {
+  "q": "Y a-t-il des bourses pour le DMN ?",
+  "a": "Je n'ai pas d'information sur les bourses pour le DMN sur la page. En revanche, la page indique que le coût pédagogique peut être financé par l'employeur, notamment via un contrat de professionnalisation (prise en charge possible par l'OPCO EP sous conditions) ou un plan de développement des compétences, et que d'autres dispositifs existent (CFP, transition professionnelle).\n\nPour savoir s'il existe des aides spécifiques, je vous invite à contacter directement le site d'enseignement auprès duquel vous souhaitez postuler, via la liste disponible sur [Trouver mon site d'enseignement](https://www.infn.fr/sites-enseignement/).",
+  "sources": [
+   "Frais de formation (tarifs 2026/2027)",
+   "Rémunération"
+  ],
+  "answered": false,
+  "sites": true,
+  "theme": "Tarifs et frais",
+  "ms": 1694,
+  "ttft": 685
+ }
+]
