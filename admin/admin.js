@@ -45,7 +45,7 @@ const sec = ms => ms == null ? "—" : (ms / 1000).toLocaleString("fr-FR", { max
 
 /* ---------- État ---------- */
 const S = { events: [], real: [], demo: null, mode: "real", comm: {}, commBusy: false, now: Date.now(), period: 7, view: "overview", f: { q: "", theme: "", status: "", fb: "" }, page: 0, loadedAt: null };
-try { const s = JSON.parse(localStorage.getItem("infn-admin-ui") || "{}"); if (s.period != null) S.period = s.period; if (s.mode) S.mode = s.mode; } catch {}
+try { const s = JSON.parse(localStorage.getItem("infn-admin-ui") || "{}"); if (s.period != null) S.period = s.period; if (s.mode) { S.mode = s.mode; S.modeChosen = true; } } catch {}
 try { S.comm = JSON.parse(localStorage.getItem("infn-admin-comm") || "{}"); } catch {}
 const saveUI = () => { try { localStorage.setItem("infn-admin-ui", JSON.stringify({ period: S.period, mode: S.mode })); } catch {} };
 
@@ -470,6 +470,8 @@ async function load(manual) {
     if (r.status === 401) { showLogin(); return; }
     if (!r.ok) throw new Error(r.status);
     const d = await r.json(); S.real = d.events || []; S.now = Date.parse(d.now) || Date.now(); S.loadedAt = Date.now();
+    // tant qu'il y a peu de vraies questions, on ouvre sur la démo (sauf choix explicite)
+    if (!S.modeChosen) S.mode = S.real.filter(e => e.type === "question").length < 20 ? "demo" : "real";
     if (S.mode === "demo") await loadDemo(); S.events = S.mode === "demo" ? S.demo : S.real;
     showApp(); render(); stamp(); if (manual) toast("Données à jour");
   } catch (e) { toast("Impossible de charger les données"); console.error(e); }
@@ -483,7 +485,7 @@ async function loadDemo() {
   S.demo = d.events.map(e => ({ ...e, ts: new Date(Date.parse(e.ts) + shift).toISOString() }));
 }
 async function setMode(m) {
-  S.mode = m; saveUI(); S.page = 0; closeDrawer();
+  S.mode = m; S.modeChosen = true; saveUI(); S.page = 0; closeDrawer();
   if (m === "demo") { try { await loadDemo(); } catch { toast("Données de démonstration indisponibles"); S.mode = "real"; } }
   S.events = S.mode === "demo" ? S.demo : S.real; render(); toast(S.mode === "demo" ? "Mode démonstration" : "Données réelles");
 }
