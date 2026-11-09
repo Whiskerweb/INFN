@@ -46,9 +46,9 @@ const median = a => { if (!a.length) return null; const s = [...a].sort((x, y) =
 const sec = ms => ms == null ? "—" : (ms / 1000).toLocaleString("fr-FR", { maximumFractionDigits: 1, minimumFractionDigits: 1 }) + " s";
 
 /* ---------- État ---------- */
-const S = { events: [], real: [], demo: null, mode: "real", cp: "w7", now: Date.now(), period: 7, view: "overview", f: { q: "", theme: "", status: "", fb: "" }, page: 0, loadedAt: null };
+const S = { events: [], real: [], demo: null, mode: "real", cp: "m1", now: Date.now(), period: 7, view: "overview", f: { q: "", theme: "", status: "", fb: "" }, page: 0, loadedAt: null };
 try { const s = JSON.parse(localStorage.getItem("infn-admin-ui") || "{}"); if (s.period != null) S.period = s.period; if (s.mode) { S.mode = s.mode; S.modeChosen = true; } } catch {}
-try { const c = JSON.parse(localStorage.getItem("infn-admin-ui") || "{}").cp; if (c) S.cp = c; } catch {}
+try { const c = JSON.parse(localStorage.getItem("infn-admin-ui") || "{}").cp; if (c && ["d7", "m1", "q"].includes(c)) S.cp = c; } catch {}
 const saveUI = () => { try { localStorage.setItem("infn-admin-ui", JSON.stringify({ period: S.period, mode: S.mode, cp: S.cp })); } catch {} };
 
 function model() {
@@ -332,22 +332,15 @@ function topQuestions(list) {
 }
 
 /* Récap com' : uniquement des chiffres exacts tirés des conversations (aucune génération IA).
-   Fenêtres : 7 jours, 7 semaines, 7 mois, trimestre (13 semaines), chacune comparée à la fenêtre précédente de même durée. */
-const CP = { d7: "7 jours", w7: "7 semaines", m7: "7 mois", q: "Trimestre" };
-const ymOf = k => [+k.slice(0, 4), +k.slice(5, 7) - 1];
-const mStart = (y, m) => new Date(Date.UTC(y, m, 1)).toISOString().slice(0, 10);
-const mEnd = (y, m) => new Date(Date.UTC(y, m + 1, 0)).toISOString().slice(0, 10);
+   Fenêtres : 7 jours (par jour), 1 mois = 4 semaines (par semaine), 1 trimestre = 13 semaines (par semaine), chacune comparée à la fenêtre précédente de même durée. */
+const CP = { d7: "7 jours", m1: "1 mois", q: "1 trimestre" };
 function commRange(kind) {
   const t = parts(S.now).key, B = [];
   if (kind === "d7") { for (let i = 6; i >= 0; i--) { const k = addDays(t, -i); B.push({ from: k, to: k, l: dayLabel(k, { weekday: "short", day: "numeric" }) }); }
     return { kind, B, start: B[0].from, end: t, prevStart: addDays(t, -13), prevEnd: addDays(t, -7), name: "7 derniers jours", unit: "jour" }; }
-  if (kind === "m7") { const [y, m] = ymOf(t);
-    for (let i = 6; i >= 0; i--) { const d = new Date(Date.UTC(y, m - i, 1)), yy = d.getUTCFullYear(), mm = d.getUTCMonth(); B.push({ from: mStart(yy, mm), to: i ? mEnd(yy, mm) : t, l: d.toLocaleDateString("fr-FR", { month: "short", timeZone: "UTC" }) + (i ? "" : " *") }); }
-    const p0 = new Date(Date.UTC(y, m - 13, 1)), p1 = new Date(Date.UTC(y, m - 7, 1));
-    return { kind, B, start: B[0].from, end: t, prevStart: mStart(p0.getUTCFullYear(), p0.getUTCMonth()), prevEnd: mEnd(p1.getUTCFullYear(), p1.getUTCMonth()), name: "7 derniers mois", unit: "mois", partial: true }; }
-  const n = kind === "q" ? 13 : 7;
+  const n = kind === "q" ? 13 : 4;
   for (let i = n - 1; i >= 0; i--) { const from = addDays(t, -7 * i - 6); B.push({ from, to: addDays(t, -7 * i), l: dayLabel(from) }); }
-  return { kind, B, start: B[0].from, end: t, prevStart: addDays(B[0].from, -7 * n), prevEnd: addDays(B[0].from, -1), name: kind === "q" ? "Dernier trimestre (13 semaines)" : "7 dernières semaines", unit: "semaine" };
+  return { kind, B, start: B[0].from, end: t, prevStart: addDays(B[0].from, -7 * n), prevEnd: addDays(B[0].from, -1), name: kind === "q" ? "Dernier trimestre (13 semaines)" : "Dernier mois (4 semaines)", unit: "semaine" };
 }
 function commRangeText(R) {
   const f = k => keyToDate(k).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" });
@@ -445,7 +438,7 @@ function commView() {
   <h2 class="sec-t">Ce que disent les chiffres</h2>
   <div class="pistes">${P.map(p => `<div class="card piste" style="--pc:${p.c}"><small class="pk">${p.k}</small><p class="ph">${p.h}</p><p class="pu">${p.u}</p>${p.copy ? `<button class="btn sm" data-copy="${esc(p.copy)}">${I.copy}${p.cl}</button>` : ""}</div>`).join("")}</div>
   <div class="card" style="margin:16px 0">
-    <div class="card-h"><div><h3>Questions les plus posées</h3><p>Formulations identiques regroupées · évolution par ${R.unit}${R.partial ? " (* mois en cours)" : ""} · cliquez pour lire la réponse</p></div></div>
+    <div class="card-h"><div><h3>Questions les plus posées</h3><p>Formulations identiques regroupées · évolution par ${R.unit} · cliquez pour lire la réponse</p></div></div>
     <div class="tbl-wrap"><table class="ctbl"><thead><tr><th style="width:28px">#</th><th>Question</th><th>Évolution</th><th class="r">Fois</th><th class="r">Part</th><th class="r">vs préc.</th><th>Statut</th></tr></thead><tbody>
     ${top.map((o, i) => `<tr data-id="${o.id}"><td class="rk num">${i + 1}</td><td class="q"><div>${esc(o.q)}</div><small>${esc(o.theme)}</small></td><td>${bars(o.series, o.answered ? C_OK : C_KO)}</td><td class="r num"><b>${o.n}</b></td><td class="r num">${pf(100 * o.n / D.q)}</td><td class="r">${delta(o.n, o.prev)}</td><td>${o.answered ? `<span class="badge ok">${I.check}Répondue</span>` : `<span class="badge ko">${I.alert}Sans réponse</span>`}</td></tr>`).join("")}
     </tbody></table></div>
