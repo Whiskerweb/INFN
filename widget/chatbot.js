@@ -50,7 +50,7 @@
       <div class="snx-brand">Assistant automatique · <button data-reset>Nouvelle conversation</button> · <a href="https://www.infn.fr/politique-confidentialite/" target="_blank" rel="noopener">Confidentialité</a></div>
     </footer>
   </section>
-  <button class="snx-launch" aria-label="Ouvrir l'assistant">${I.chat}${I.close}<span class="snx-badge">1</span></button>`;
+  <button class="snx-launch" aria-label="Ouvrir l'assistant">${I.chat}${I.close}</button>`;
   document.body.appendChild(root);
 
   const body=root.querySelector(".snx-body"), ta=root.querySelector("textarea"), teaser=root.querySelector(".snx-teaser");

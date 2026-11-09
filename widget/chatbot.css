@@ -20,8 +20,6 @@
 #snx-root.open .snx-launch::before{animation:none}
 #snx-root.open .snx-ico-chat{opacity:0;transform:rotate(90deg) scale(.6)}
 #snx-root.open .snx-ico-close{opacity:1;transform:none}
-#snx-root .snx-badge{position:absolute;top:-5px;right:-5px;min-width:22px;height:22px;border-radius:11px;background:var(--snx-orange);color:#fff;font-size:12px;font-weight:700;display:grid;place-items:center;border:3px solid #fff;transition:transform .3s}
-#snx-root.open .snx-badge,#snx-root.seen .snx-badge{transform:scale(0)}
 
 /* Bulle d'accroche */
 
