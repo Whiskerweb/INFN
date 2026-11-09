@@ -2,9 +2,6 @@
   "functions": {
     "api/chat.js": {
       "includeFiles": "corpus-dmn.md"
-    },
-    "api/admin/comm.js": {
-      "includeFiles": "corpus-dmn.md"
     }
   },
   "rewrites": [

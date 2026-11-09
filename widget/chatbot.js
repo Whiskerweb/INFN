@@ -103,6 +103,23 @@
   const newSid=()=>Math.random().toString(36).slice(2,10)+Date.now().toString(36);
   let sid=newSid(), turn=0;
   const track=ev=>{ try{ fetch("/api/event",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({sid,turn,...ev}),keepalive:true}); }catch(e){} };
+  // Redirections : on note seulement la destination (section de la page ou lien INFN), jamais le contenu tapé.
+  const SITE_SLUG=s=>s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z]+/g,"-");
+  function linkLabel(href){
+    let u; try{ u=new URL(href,location.href); }catch(e){ return null; }
+    if(!/(^|\.)infn\.fr$/.test(u.hostname)) return "Site externe";
+    const p=u.pathname.toLowerCase();
+    if(p.startsWith("/demande-informations")) return "Formulaire de demande d'information";
+    if(p.startsWith("/sites-enseignement")){ const slug=p.split("/").filter(Boolean)[1]; if(!slug) return "Page des sites d'enseignement";
+      const s=SITES.find(x=>slug.replace(/^infn-/,"")===SITE_SLUG(x)); return s?"Page INFN "+s:"Page des sites d'enseignement"; }
+    if(p.includes("guide-de-formation")) return "Guide de formation DMN (PDF)";
+    if(p.startsWith("/download/")) return "Document PDF INFN";
+    return "Autre page infn.fr";
+  }
+  root.addEventListener("click",e=>{
+    const a=e.target.closest("a[href]"); if(!a||a.closest(".snx-src")||a.closest(".snx-brand")) return;
+    const t=linkLabel(a.getAttribute("href")); if(t) track({type:"redirect",kind:"lien",target:t});
+  });
   function feedback(){
     const f=document.createElement("div"); f.className="snx-fb"; const myTurn=turn;
     f.innerHTML='<span>Réponse utile ?</span><button data-v="up" aria-label="Utile">👍</button><button data-v="down" aria-label="Pas utile">👎</button>';
@@ -134,7 +151,7 @@
     titles.forEach(ti=>{
       const a=document.createElement("a"); a.className="web"; a.href=PAGE+"#:~:text="+encodeURIComponent(ti); a.target="_blank"; a.rel="noopener";
       a.innerHTML="<em>WEB</em>"+escH(ti);
-      a.onclick=ev=>{ const h=findHeading(ti); if(!h) return; ev.preventDefault();
+      a.onclick=ev=>{ track({type:"redirect",kind:"section",target:ti}); const h=findHeading(ti); if(!h) return; ev.preventDefault();
         if(innerWidth<=520) open(false);
         h.scrollIntoView({behavior:"smooth",block:"center"}); h.classList.add("snx-hl"); setTimeout(()=>h.classList.remove("snx-hl"),2600); };
       d.appendChild(a);

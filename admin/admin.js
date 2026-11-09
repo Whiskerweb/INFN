@@ -7,6 +7,8 @@ const pf = v => nf.format(Math.round(v)) + " %";
 const TZ = "Europe/Paris";
 const DOW = ["Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"];
 const C_OK = "#1E4FD8", C_KO = "#F29A1F";
+// Redirections : 3 catégories (palette validée ; libellés toujours visibles)
+const RCAT = { section: { l: "Sections de la page", c: "#1E4FD8" }, lien: { l: "Pages et documents INFN", c: "#1BAF7A" }, site: { l: "Sites d'enseignement", c: "#E87BA4" } };
 const HEAT = ["#F1F4FA", "#D6E2FF", "#A9C1FB", "#6F95F2", "#3A64DB", "#03256C"];
 
 const I = {
@@ -44,10 +46,10 @@ const median = a => { if (!a.length) return null; const s = [...a].sort((x, y) =
 const sec = ms => ms == null ? "—" : (ms / 1000).toLocaleString("fr-FR", { maximumFractionDigits: 1, minimumFractionDigits: 1 }) + " s";
 
 /* ---------- État ---------- */
-const S = { events: [], real: [], demo: null, mode: "real", comm: {}, commBusy: false, now: Date.now(), period: 7, view: "overview", f: { q: "", theme: "", status: "", fb: "" }, page: 0, loadedAt: null };
+const S = { events: [], real: [], demo: null, mode: "real", cp: "w7", now: Date.now(), period: 7, view: "overview", f: { q: "", theme: "", status: "", fb: "" }, page: 0, loadedAt: null };
 try { const s = JSON.parse(localStorage.getItem("infn-admin-ui") || "{}"); if (s.period != null) S.period = s.period; if (s.mode) { S.mode = s.mode; S.modeChosen = true; } } catch {}
-try { S.comm = JSON.parse(localStorage.getItem("infn-admin-comm") || "{}"); } catch {}
-const saveUI = () => { try { localStorage.setItem("infn-admin-ui", JSON.stringify({ period: S.period, mode: S.mode })); } catch {} };
+try { const c = JSON.parse(localStorage.getItem("infn-admin-ui") || "{}").cp; if (c) S.cp = c; } catch {}
+const saveUI = () => { try { localStorage.setItem("infn-admin-ui", JSON.stringify({ period: S.period, mode: S.mode, cp: S.cp })); } catch {} };
 
 function model() {
   const qs = [], fb = new Map(), sitesBySid = new Map(), leadsBySid = new Map();
@@ -94,8 +96,13 @@ function stats() {
   const fbs = cur.filter(q => q._fb), up = fbs.filter(q => q._fb === "up").length;
   const siteConv = new Map(); for (const e of sitesCur) { const s = siteConv.get(e.site) || new Set(); s.add(e.sid); siteConv.set(e.site, s); }
 
+  const redir = (a, b) => { const l = S.events.filter(e => (e.type === "redirect" || e.type === "site") && inR(parts(e.ts).key, a, b)), by = { section: 0, lien: 0, site: 0 }, m = new Map();
+    for (const e of l) { const k = e.type === "site" ? "site" : e.kind === "section" ? "section" : "lien", t = e.type === "site" ? "INFN " + e.site : e.target; by[k]++; const o = m.get(k + "|" + t) || { t, k, n: 0 }; o.n++; m.set(k + "|" + t, o); }
+    return { n: l.length, by, top: [...m.values()].sort((x, y) => y.n - x.n), convs: new Set(l.map(e => e.sid)).size }; };
+  const rd = redir(R.start, R.end), rdPrev = R.prevStart ? redir(R.prevStart, R.prevEnd) : null;
+
   return {
-    R, all, cur, prev, weekly, buckets,
+    R, all, cur, prev, weekly, buckets, rd, rdPrev,
     q: cur.length, qPrev: prev?.length ?? null,
     conv: convs(cur), convPrev: prev ? convs(prev) : null,
     rate: rate(cur), ratePrev: prev ? rate(prev) : null,
@@ -159,12 +166,12 @@ const emptyMini = () => `<div class="empty" style="padding:24px 10px"><small>Pas
 
 /* ---------- Graphique : questions par jour (barres empilées) ---------- */
 function dailyChart(st) {
-  const B = st.buckets, W = 760, H = 250, padL = 34, padB = 26, padT = 10, iw = W - padL - 6, ih = H - padB - padT;
+  const B = st.buckets, W = 600, H = 300, padL = 34, padB = 26, padT = 10, iw = W - padL - 6, ih = H - padB - padT;
   const max = Math.max(4, ...B.map(b => b.ok + b.ko)), step = niceStep(max), top = Math.ceil(max / step) * step;
   const y = v => padT + ih - (v / top) * ih, bw = iw / B.length, w = Math.max(3, Math.min(30, bw * 0.62));
   let g = "";
   for (let v = 0; v <= top; v += step) g += `<line class="gridline" x1="${padL}" x2="${W - 6}" y1="${y(v)}" y2="${y(v)}"/><text x="${padL - 8}" y="${y(v) + 4}" text-anchor="end">${v}</text>`;
-  const every = Math.ceil(B.length / 10);
+  const every = Math.ceil(B.length / 7);
   let bars = "", labels = "", hits = "";
   B.forEach((b, i) => {
     const cx = padL + bw * i + bw / 2, x = cx - w / 2, tot = b.ok + b.ko;
@@ -185,6 +192,32 @@ function bindDaily(st) {
       const tot = b.ok + b.ko, title = st.weekly ? `Semaine du ${dayLabel(b.from)}` : dayLabel(b.k, { weekday: "long", day: "numeric", month: "long" });
       showTip(`<b>${title}</b><div class="row"><i style="background:${C_OK}"></i>Répondues<span>${b.ok}</span></div><div class="row"><i style="background:${C_KO}"></i>Sans réponse<span>${b.ko}</span></div><div class="row" style="opacity:.7">Total<span>${tot}</span></div>`, ev); });
     h.addEventListener("mouseleave", () => { hideTip(); hl.setAttribute("width", 0); });
+  });
+}
+
+/* ---------- Graphique : redirections (anneau par catégorie + destinations) ---------- */
+function redirChart(st) {
+  const R = st.rd; if (!R.n) return `<div class="empty" style="padding:30px 10px"><small>Aucune redirection sur la période.</small></div>`;
+  const r = 52, C = 2 * Math.PI * r, gap = 3; let off = 0, segs = "";
+  for (const [k, v] of Object.entries(RCAT)) { const n = R.by[k]; if (!n) continue; const len = Math.max(0, C * n / R.n - gap);
+    segs += `<circle class="seg-arc" data-k="${k}" cx="70" cy="70" r="${r}" fill="none" stroke="${v.c}" stroke-width="18" stroke-dasharray="${len.toFixed(2)} ${(C - len).toFixed(2)}" stroke-dashoffset="${(-off).toFixed(2)}" transform="rotate(-90 70 70)"/>`; off += C * n / R.n; }
+  const top = R.top.slice(0, 5), max = top[0]?.n || 1, conv = st.conv ? Math.round(100 * R.convs / st.conv) : null;
+  return `<div class="redir">
+    <svg class="donut" viewBox="0 0 140 140" role="img" aria-label="Répartition des redirections">${segs}
+      <text x="70" y="68" text-anchor="middle" class="d-v">${nf.format(R.n)}</text><text x="70" y="86" text-anchor="middle" class="d-l">redirections</text></svg>
+    <div class="redir-leg">${Object.entries(RCAT).map(([k, v]) => `<div class="rl" data-k="${k}"><i style="background:${v.c}"></i><span>${v.l}</span><b class="num">${nf.format(R.by[k])}</b><small class="num">${pf(100 * R.by[k] / R.n)}</small></div>`).join("")}
+      ${conv != null ? `<p class="redir-note"><b>${conv} %</b> des conversations mènent à au moins une redirection${st.leads ? ` · <b>${st.leads}</b> contact(s) transmis` : ""}</p>` : ""}</div>
+  </div>
+  <div class="redir-top"><small class="lbl2">Destinations les plus fréquentes</small>
+    ${top.map(o => `<div class="rt"><i style="background:${RCAT[o.k].c}"></i><span class="n" title="${esc(o.t)}">${esc(o.t)}</span><span class="b"><em style="width:${(100 * o.n / max).toFixed(1)}%;background:${RCAT[o.k].c}"></em></span><b class="num">${nf.format(o.n)}</b></div>`).join("")}
+  </div>`;
+}
+function bindRedir(st) {
+  document.querySelectorAll(".donut .seg-arc, .redir-leg .rl").forEach(el => {
+    el.addEventListener("mousemove", ev => { const k = el.dataset.k, n = st.rd.by[k];
+      showTip(`<b>${RCAT[k].l}</b><div class="row"><i style="background:${RCAT[k].c}"></i>Redirections<span>${nf.format(n)}</span></div><div class="row" style="opacity:.7">Part<span>${pf(100 * n / st.rd.n)}</span></div>`, ev);
+      document.querySelectorAll(".donut .seg-arc").forEach(a => a.style.opacity = a.dataset.k === k ? 1 : .35); });
+    el.addEventListener("mouseleave", () => { hideTip(); document.querySelectorAll(".donut .seg-arc").forEach(a => a.style.opacity = 1); });
   });
 }
 
@@ -235,10 +268,16 @@ function overview(st) {
     ${kpi(I.moon, "Hors heures ouvrées", pctVal(st.off), "<span>soirs (18 h – 9 h) et week-ends</span>")}
     ${kpi(I.send, "Demandes transmises", nf.format(st.transmitted ?? 0), `${delta(st.transmitted, st.transmittedPrev)}<span>dont ${st.leads} avec coordonnées</span>`)}
   </div>
-  <div class="card" style="margin-bottom:16px">
-    <div class="card-h"><div><h3>Questions ${st.weekly ? "par semaine" : "par jour"}</h3><p>Répondues par l'assistant ou restées sans réponse</p></div>
-      <div class="legend"><span><i style="background:${C_OK}"></i>Répondues</span><span><i style="background:${C_KO}"></i>Sans réponse</span></div></div>
-    ${st.q ? dailyChart(st) : emptyMini()}
+  <div class="grid g-1-1">
+    <div class="card">
+      <div class="card-h"><div><h3>Questions ${st.weekly ? "par semaine" : "par jour"}</h3><p>Répondues ou restées sans réponse</p></div>
+        <div class="legend"><span><i style="background:${C_OK}"></i>Répondues</span><span><i style="background:${C_KO}"></i>Sans réponse</span></div></div>
+      ${st.q ? dailyChart(st) : emptyMini()}
+    </div>
+    <div class="card">
+      <div class="card-h"><div><h3>Redirections</h3><p>Où l'assistant envoie les visiteurs</p></div>${delta(st.rd.n, st.rdPrev?.n)}</div>
+      ${redirChart(st)}
+    </div>
   </div>
   <div class="grid g-1-1">
     <div class="card"><div class="card-h"><div><h3>À enrichir en priorité</h3><p>Questions les plus posées restées sans réponse</p></div><button class="act" data-go="gaps">Tout voir →</button></div>
@@ -292,57 +331,150 @@ function topQuestions(list) {
   return [...m.values()].sort((a, b) => b[1] - a[1]);
 }
 
-/* Aide com' : newsletter et réseaux sociaux à partir des questions récentes */
-function digest(st) {
-  const tq = topQuestions(st.cur);
-  return {
-    periode: rangeText(st.R).split(" · ")[0], questions: st.q, conversations: st.conv, taux_reponse: Math.round(st.rate || 0) + " %", hors_heures: Math.round(st.off || 0) + " %",
-    themes: st.themeRows.map(r => ({ theme: r.theme, questions: r.n, sans_reponse_pct: Math.round(100 - (r.rate || 0)), avis_negatifs: r.fb - r.up })),
-    questions_sans_reponse: topQuestions(st.unanswered).slice(0, 25).map(([q, n]) => ({ q, n })),
-    questions_frequentes: tq.slice(0, 20).map(([q, n, ok]) => ({ q, n, repondue: ok })),
-    avis_negatifs: st.cur.filter(q => q._fb === "down").slice(0, 15).map(q => q.q),
-    sites_demandes: st.sites.slice(0, 6).map(([s, n]) => ({ site: s, n })),
-  };
+/* Récap com' : uniquement des chiffres exacts tirés des conversations (aucune génération IA).
+   Fenêtres : 7 jours, 7 semaines, 7 mois, trimestre (13 semaines), chacune comparée à la fenêtre précédente de même durée. */
+const CP = { d7: "7 jours", w7: "7 semaines", m7: "7 mois", q: "Trimestre" };
+const ymOf = k => [+k.slice(0, 4), +k.slice(5, 7) - 1];
+const mStart = (y, m) => new Date(Date.UTC(y, m, 1)).toISOString().slice(0, 10);
+const mEnd = (y, m) => new Date(Date.UTC(y, m + 1, 0)).toISOString().slice(0, 10);
+function commRange(kind) {
+  const t = parts(S.now).key, B = [];
+  if (kind === "d7") { for (let i = 6; i >= 0; i--) { const k = addDays(t, -i); B.push({ from: k, to: k, l: dayLabel(k, { weekday: "short", day: "numeric" }) }); }
+    return { kind, B, start: B[0].from, end: t, prevStart: addDays(t, -13), prevEnd: addDays(t, -7), name: "7 derniers jours", unit: "jour" }; }
+  if (kind === "m7") { const [y, m] = ymOf(t);
+    for (let i = 6; i >= 0; i--) { const d = new Date(Date.UTC(y, m - i, 1)), yy = d.getUTCFullYear(), mm = d.getUTCMonth(); B.push({ from: mStart(yy, mm), to: i ? mEnd(yy, mm) : t, l: d.toLocaleDateString("fr-FR", { month: "short", timeZone: "UTC" }) + (i ? "" : " *") }); }
+    const p0 = new Date(Date.UTC(y, m - 13, 1)), p1 = new Date(Date.UTC(y, m - 7, 1));
+    return { kind, B, start: B[0].from, end: t, prevStart: mStart(p0.getUTCFullYear(), p0.getUTCMonth()), prevEnd: mEnd(p1.getUTCFullYear(), p1.getUTCMonth()), name: "7 derniers mois", unit: "mois", partial: true }; }
+  const n = kind === "q" ? 13 : 7;
+  for (let i = n - 1; i >= 0; i--) { const from = addDays(t, -7 * i - 6); B.push({ from, to: addDays(t, -7 * i), l: dayLabel(from) }); }
+  return { kind, B, start: B[0].from, end: t, prevStart: addDays(B[0].from, -7 * n), prevEnd: addDays(B[0].from, -1), name: kind === "q" ? "Dernier trimestre (13 semaines)" : "7 dernières semaines", unit: "semaine" };
 }
-function commView(st) {
-  const key = S.mode + "|" + S.period, c = S.comm[key];
-  const head = `<div class="card comm-hero">
-    <div style="display:flex;gap:14px;align-items:flex-start;flex-wrap:wrap">
-      ${I.bulb.replace("<svg", '<svg style="width:22px;height:22px;flex:none;color:#14CCFF;margin-top:2px"')}
-      <div style="flex:1;min-width:240px"><h3 style="font-size:15px;margin-bottom:4px">Vos prochains contenus, guidés par les questions des candidats</h3>
-      <p style="opacity:.85;font-size:13px;max-width:720px">L'IA analyse les ${nf.format(st.q)} questions de la période (${rangeText(st.R).split(" · ")[0].toLowerCase()}) : thèmes mal compris, idées pour la newsletter de janvier et posts prêts à adapter. Les faits viennent uniquement de la page DMN ; ce qui manque est signalé « À compléter par l'équipe ».</p></div>
-      <button class="btn btn-gen" id="genComm" ${st.q ? "" : "disabled"}>${I.spark2}${c ? "Régénérer" : "Générer les idées"}</button>
-    </div></div>`;
-  if (S.commBusy) return head + `<div class="card"><div class="gen-wait"><span class="loader"></span><b>Analyse des questions en cours…</b><small>Rédaction des idées de newsletter et des posts (≈ 20 s)</small></div></div>`;
-  if (!c) return head + `<div class="card"><div class="empty">${I.bulb}<b>Prêt à analyser</b>Cliquez sur « Générer les idées » pour obtenir les thèmes à clarifier, des idées de newsletter et des posts réseaux sociaux.</div></div>`;
-  if (c.error) return head + `<div class="card"><div class="empty">${I.alert}<b>La génération n'a pas abouti</b>Réessayez dans un instant.</div></div>`;
-  const pri = p => `<span class="badge ${p === "haute" ? "ko" : "ok"}" style="${p === "basse" ? "background:var(--line2);color:var(--mute)" : ""}">Priorité ${esc(p || "moyenne")}</span>`;
-  const todo = s => esc(s).replace(/\[À compléter par l'équipe[^\]]*\]/g, m => `<mark class="todo">${m}</mark>`);
-  const copyBtn = txt => `<button class="btn sm" data-copy="${esc(txt)}">${I.copy}Copier</button>`;
-  const net = { LinkedIn: "in", Instagram: "ig", Facebook: "fb" };
+function commRangeText(R) {
+  const f = k => keyToDate(k).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" });
+  return `Du ${f(R.start)} au ${f(R.end)} · comparé à la période précédente de même durée`;
+}
+const qKey = q => q.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9€]+/g, " ").trim();
+function commData(R) {
+  const nb = R.B.length, bi = k => R.B.findIndex(b => k >= b.from && k <= b.to), zero = () => Array(nb).fill(0);
+  const inCur = k => k >= R.start && k <= R.end, inPrev = k => k >= R.prevStart && k <= R.prevEnd;
+  const all = model(), cur = all.filter(q => inCur(q._p.key)), prev = all.filter(q => inPrev(q._p.key));
+  const grp = (list, keyf, init) => { const m = new Map(); for (const x of list) { const k = keyf(x); if (k == null) continue; if (!m.has(k)) m.set(k, init(x)); m.get(k)._l.push(x); } return m; };
+  // questions identiques (casse, accents et ponctuation ignorés)
+  const Q = grp(cur, q => qKey(q.q), q => ({ q: q.q, id: q.id, a: q.a, theme: q.theme || "Autre", answered: q.answered, sources: q.sources || [], series: zero(), prev: 0, _l: [] }));
+  for (const o of Q.values()) { o.n = o._l.length; for (const q of o._l) o.series[bi(q._p.key)]++; }
+  for (const q of prev) { const o = Q.get(qKey(q.q)); if (o) o.prev++; }
+  const questions = [...Q.values()].sort((a, b) => b.n - a.n);
+  // thèmes
+  const T = grp(cur, q => q.theme || "Autre", q => ({ theme: q.theme || "Autre", series: zero(), prev: 0, ko: 0, _l: [] }));
+  for (const o of T.values()) { o.n = o._l.length; o.ko = o._l.filter(q => !q.answered).length; for (const q of o._l) o.series[bi(q._p.key)]++; }
+  for (const q of prev) { const o = T.get(q.theme || "Autre"); if (o) o.prev++; }
+  const themes = [...T.values()].sort((a, b) => b.n - a.n);
+  // établissements : conversations orientées vers un site, demandes de contact transmises
+  const evs = t => S.events.filter(e => e.type === t);
+  const siteEv = evs("site").map(e => ({ ...e, k: parts(e.ts).key })), leadEv = evs("lead").map(e => ({ ...e, k: parts(e.ts).key }));
+  const SI = new Map(); const so = s => { if (!SI.has(s)) SI.set(s, { site: s, conv: new Set(), leads: new Set(), prevConv: new Set(), series: zero() }); return SI.get(s); };
+  for (const e of siteEv) { if (inCur(e.k)) { const o = so(e.site); if (!o.conv.has(e.sid)) o.series[bi(e.k)]++; o.conv.add(e.sid); } else if (inPrev(e.k)) so(e.site).prevConv.add(e.sid); }
+  for (const e of leadEv) if (inCur(e.k)) so(e.site).leads.add(e.sid);
+  const sites = [...SI.values()].map(o => ({ ...o, n: o.conv.size, l: o.leads.size, prev: o.prevConv.size })).filter(o => o.n || o.l).sort((a, b) => b.n - a.n || b.l - a.l);
+  // pages ouvertes depuis l'assistant (sections de la page et liens INFN)
+  const RD = new Map();
+  for (const e of evs("redirect")) { const k = parts(e.ts).key, id = e.kind + "|" + e.target; if (!RD.has(id)) RD.set(id, { t: e.target, k: e.kind, n: 0, prev: 0 }); if (inCur(k)) RD.get(id).n++; else if (inPrev(k)) RD.get(id).prev++; }
+  const pages = [...RD.values()].filter(o => o.n).sort((a, b) => b.n - a.n);
+  // moments
+  const dow = Array(7).fill(0), hour = Array(24).fill(0); for (const q of cur) { dow[q._p.dow]++; hour[q._p.hour]++; }
+  let slot = [0, -1]; for (let h = 0; h < 24; h++) { const v = hour[h] + hour[(h + 1) % 24] + hour[(h + 2) % 24]; if (v > slot[1]) slot = [h, v]; }
+  const conv = l => new Set(l.map(q => q.sid || q.id)).size;
+  return { R, cur, prev, questions, themes, sites, pages, dow, hour, slot,
+    q: cur.length, qPrev: prev.length, conv: conv(cur), convPrev: conv(prev), ko: cur.filter(q => !q.answered).length, koPrev: prev.filter(q => !q.answered).length,
+    leads: sites.reduce((s, o) => s + o.l, 0), leadsPrev: new Set(leadEv.filter(e => inPrev(e.k)).map(e => e.sid)).size, siteConv: sites.reduce((s, o) => s + o.n, 0),
+    unanswered: questions.filter(o => !o.answered) };
+}
+function bars(series, color = "#1E4FD8") {
+  const n = series.length, bw = n > 8 ? 6 : 9, g = n > 8 ? 2 : 3, W = n * (bw + g) - g, H = 26, max = Math.max(1, ...series);
+  return `<svg class="mbars" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" aria-hidden="true">${series.map((v, i) => { const h = v ? Math.max(2, (H - 1) * v / max) : 1;
+    return `<rect x="${i * (bw + g)}" y="${H - h}" width="${bw}" height="${h}" rx="1.5" fill="${v ? color : "#E6E9F2"}" opacity="${i === n - 1 && v ? 1 : .78}"/>`; }).join("")}</svg>`;
+}
+const DAYS_L = ["lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi", "dimanche"];
+function pistes(D) {
+  const out = [], share = n => pf(100 * n / (D.q || 1));
+  const topOk = D.questions.find(o => o.answered);
+  if (topOk) out.push({ k: "Question n° 1", c: C_OK, h: `« ${esc(topOk.q)} » : <b>${topOk.n} fois</b>, ${share(topOk.n)} des questions ${delta(topOk.n, topOk.prev)}`,
+    u: `La réponse est déjà sur la page${topOk.sources[0] ? ` (section « ${esc(topOk.sources[0])} »)` : ""} : sujet direct pour un post ou la FAQ.`, copy: topOk.a, cl: "Copier la réponse" });
+  const rising = D.themes.filter(t => t.prev >= 5 && t.n >= 8 && t.theme !== "Autre").map(t => ({ ...t, d: (t.n - t.prev) / t.prev })).sort((a, b) => b.d - a.d)[0];
+  if (rising && rising.d > 0.1) out.push({ k: "Thème en hausse", c: "#0E9F6E", h: `<b>${esc(rising.theme)}</b> : ${rising.n} questions contre ${rising.prev} sur la période précédente ${delta(rising.n, rising.prev)}`,
+    u: "La demande progresse sur ce sujet : à placer en tête de la prochaine communication." });
+  const gap = D.unanswered[0];
+  if (gap) out.push({ k: "Information absente", c: C_KO, h: `« ${esc(gap.q)} » : <b>${gap.n} fois sans réponse</b>`, u: "La page ne donne pas cette information : la publier répond à une demande mesurée.", copy: gap.q, cl: "Copier la question" });
+  const s = D.sites[0];
+  if (s) out.push({ k: "Établissement le plus demandé", c: "#E87BA4", h: `<b>INFN ${esc(s.site)}</b> : ${s.n} conversation(s) orientée(s), ${pf(100 * s.n / (D.siteConv || 1))} du total, ${s.l} contact(s) transmis`,
+    u: "Site qui concentre le plus de demandes via l'assistant : à mettre en avant dans les contenus locaux." });
+  if (D.q >= 10) { const bd = D.dow.indexOf(Math.max(...D.dow)), h = D.slot[0];
+    out.push({ k: "Moment d'activité", c: "#03256C", h: `<b>${share(D.slot[1])}</b> des questions arrivent entre <b>${h} h et ${(h + 3) % 24} h</b> · jour le plus actif : <b>${DAYS_L[bd]}</b> (${share(D.dow[bd])})`,
+      u: "Créneau où les candidats sont en ligne : à privilégier pour publier." }); }
+  return out;
+}
+function recapText(D) {
+  const L = [], R = D.R, pc = n => Math.round(100 * n / (D.q || 1)) + " %";
+  const dv = (a, b) => b ? ` (${a - b >= 0 ? "+" : ""}${Math.round(100 * (a - b) / b)} % vs période précédente)` : "";
+  L.push(`Assistant IA DMN · récap ${R.name.toLowerCase()} (${commRangeText(R).split(" · ")[0].toLowerCase()})`, "");
+  L.push(`Questions : ${D.q}${dv(D.q, D.qPrev)} · conversations : ${D.conv} · sans réponse : ${D.ko} (${pc(D.ko)}) · contacts transmis : ${D.leads}`, "");
+  L.push("Questions les plus posées :"); D.questions.slice(0, 10).forEach((o, i) => L.push(`${i + 1}. ${o.q} — ${o.n} fois${o.answered ? "" : " (sans réponse)"}`)); L.push("");
+  L.push("Thèmes :"); D.themes.forEach(t => L.push(`- ${t.theme} : ${t.n}${t.prev ? ` (préc. ${t.prev})` : ""}`)); L.push("");
+  if (D.sites.length) { L.push("Établissements les plus demandés :"); D.sites.slice(0, 6).forEach(o => L.push(`- INFN ${o.site} : ${o.n} conversation(s), ${o.l} contact(s)`)); L.push(""); }
+  if (D.unanswered.length) { L.push("Informations demandées absentes de la page :"); D.unanswered.slice(0, 8).forEach(o => L.push(`- ${o.q} — ${o.n} fois`)); }
+  return L.join("\n");
+}
+function commView() {
+  const R = commRange(S.cp), D = commData(R); S._recap = recapText(D);
+  const head = `<div class="card cbar">
+    <div class="seg cseg">${Object.entries(CP).map(([k, l]) => `<button data-cp="${k}" class="${S.cp === k ? "on" : ""}">${l}</button>`).join("")}</div>
+    <span class="cnote">${I.check}Chiffres exacts issus des conversations · aucune donnée générée</span>
+    <button class="btn" id="copyRecap">${I.copy}Copier le récap</button></div>`;
+  if (!D.q) return head + emptyState("Aucune question sur cette période.");
+  const nTop = R.B.length > 8 ? 12 : 10, top = D.questions.slice(0, nTop), maxT = D.themes[0]?.n || 1;
+  const heatC = (v, m) => { const l = v ? Math.max(1, Math.ceil(5 * v / m)) : 0; return `background:${HEAT[l]};color:${l >= 4 ? "#fff" : "var(--ink)"}`; };
+  const maxCell = Math.max(1, ...D.themes.flatMap(t => t.series));
+  const P = pistes(D);
   return head + `
-  <p class="gen-meta">Généré ${shortDate(c.generatedAt).toLowerCase()} · ${esc(c.resume || "")}</p>
-  <h2 class="sec-t">Ce que les candidats comprennent mal</h2>
-  <div class="grid g-3 cards-auto">${(c.themes || []).map(t => `<div class="card idea"><div class="idea-h"><b>${esc(t.theme)}</b>${pri(t.priorite)}</div><small class="sig">${esc(t.signal)}</small><p>${todo(t.constat)}</p><div class="add"><small>À ajouter sur la page</small>${todo(t.a_ajouter)}</div></div>`).join("")}</div>
-  <h2 class="sec-t">Idées pour la newsletter de janvier</h2>
-  <div class="grid g-3 cards-auto">${(c.newsletter || []).map((n, i) => `<div class="card idea"><div class="idea-h"><span class="num-badge">${i + 1}</span><b>${esc(n.titre)}</b></div><p class="mute">${todo(n.angle)}</p>
-    <small class="lbl2">Variantes d'objet</small><ul class="subj">${(n.objets || []).map(o => `<li><span>${todo(o)}</span><button class="icon-btn" data-copy="${esc(o)}" title="Copier">${I.copy}</button></li>`).join("")}</ul>
-    <small class="lbl2">Contenu</small><ul class="plan">${(n.plan || []).map(p => `<li>${todo(p)}</li>`).join("")}</ul>
-    <div class="cta-l"><small>Appel à l'action</small>${todo(n.cta)}</div></div>`).join("")}</div>
-  <h2 class="sec-t">Posts réseaux sociaux</h2>
-  <div class="grid g-3 cards-auto">${(c.posts || []).map(p => `<div class="card idea post"><div class="idea-h"><span class="net ${net[p.reseau] || ""}">${esc(p.reseau)}</span><b>${esc(p.sujet)}</b></div><div class="post-tx">${todo(p.texte).replace(/\n/g, "<br>")}</div><small class="vis">🎨 ${esc(p.visuel)}</small><div style="margin-top:auto;padding-top:12px">${copyBtn(p.texte)}</div></div>`).join("")}</div>
-  <h2 class="sec-t">FAQ à ajouter sur la page DMN</h2>
-  <div class="card">${(c.faq || []).map(f => `<details class="faq"><summary>${esc(f.question)}</summary><p>${todo(f.reponse)}</p></details>`).join("")}</div>`;
-}
-async function genComm() {
-  const st = stats(), key = S.mode + "|" + S.period; S.commBusy = true; render();
-  try {
-    const r = await fetch("/api/admin/comm", { method: "POST", headers: { "Content-Type": "application/json" }, credentials: "same-origin", body: JSON.stringify({ digest: digest(st) }) });
-    if (r.status === 401) { S.commBusy = false; showLogin(); return; }
-    S.comm[key] = r.ok ? await r.json() : { error: true };
-    if (r.ok) { try { localStorage.setItem("infn-admin-comm", JSON.stringify(S.comm)); } catch {} toast("Idées générées"); }
-  } catch { S.comm[key] = { error: true }; }
-  S.commBusy = false; if (S.view === "comm") render();
+  <div class="grid kpis k4">
+    ${kpi(I.q, "Questions posées", nf.format(D.q), delta(D.q, D.qPrev) + `<span>${D.qPrev} la période précédente</span>`)}
+    ${kpi(I.users, "Conversations", nf.format(D.conv), delta(D.conv, D.convPrev) + `<span>${D.convPrev} la période précédente</span>`)}
+    ${kpi(I.alert, "Questions sans réponse", nf.format(D.ko), `<span>${pf(100 * D.ko / D.q)} des questions · ${D.unanswered.length} formulation(s)</span>`)}
+    ${kpi(I.send, "Contacts transmis aux sites", nf.format(D.leads), delta(D.leads, D.leadsPrev) + `<span>${D.siteConv} conversation(s) orientée(s)</span>`)}
+  </div>
+  <h2 class="sec-t">Ce que disent les chiffres</h2>
+  <div class="pistes">${P.map(p => `<div class="card piste" style="--pc:${p.c}"><small class="pk">${p.k}</small><p class="ph">${p.h}</p><p class="pu">${p.u}</p>${p.copy ? `<button class="btn sm" data-copy="${esc(p.copy)}">${I.copy}${p.cl}</button>` : ""}</div>`).join("")}</div>
+  <div class="card" style="margin:16px 0">
+    <div class="card-h"><div><h3>Questions les plus posées</h3><p>Formulations identiques regroupées · évolution par ${R.unit}${R.partial ? " (* mois en cours)" : ""} · cliquez pour lire la réponse</p></div></div>
+    <div class="tbl-wrap"><table class="ctbl"><thead><tr><th style="width:28px">#</th><th>Question</th><th>Évolution</th><th class="r">Fois</th><th class="r">Part</th><th class="r">vs préc.</th><th>Statut</th></tr></thead><tbody>
+    ${top.map((o, i) => `<tr data-id="${o.id}"><td class="rk num">${i + 1}</td><td class="q"><div>${esc(o.q)}</div><small>${esc(o.theme)}</small></td><td>${bars(o.series, o.answered ? C_OK : C_KO)}</td><td class="r num"><b>${o.n}</b></td><td class="r num">${pf(100 * o.n / D.q)}</td><td class="r">${delta(o.n, o.prev)}</td><td>${o.answered ? `<span class="badge ok">${I.check}Répondue</span>` : `<span class="badge ko">${I.alert}Sans réponse</span>`}</td></tr>`).join("")}
+    </tbody></table></div>
+  </div>
+  <div class="card" style="margin-bottom:16px">
+    <div class="card-h"><div><h3>Thèmes, ${R.unit} par ${R.unit}</h3><p>Nombre exact de questions · plus la case est foncée, plus le thème est demandé</p></div></div>
+    <div class="tbl-wrap"><table class="ttbl"><thead><tr><th>Thème</th>${R.B.map(b => `<th class="c">${esc(b.l)}</th>`).join("")}<th class="r">Total</th><th class="r">vs préc.</th><th class="r">Sans rép.</th></tr></thead><tbody>
+    ${D.themes.map(t => `<tr data-theme="${esc(t.theme)}"><td><span class="chip"><i></i>${esc(t.theme)}</span></td>${t.series.map(v => `<td class="c"><span class="hc num" style="${heatC(v, maxCell)}">${v || "·"}</span></td>`).join("")}<td class="r num"><b>${t.n}</b></td><td class="r">${delta(t.n, t.prev)}</td><td class="r num">${t.ko ? `<span style="color:var(--warn);font-weight:600">${t.ko}</span>` : "0"}</td></tr>`).join("")}
+    </tbody></table></div>
+  </div>
+  <div class="grid g-1-1">
+    <div class="card"><div class="card-h"><div><h3>Établissements les plus demandés</h3><p>Site choisi dans l'assistant · contacts = coordonnées laissées</p></div></div>
+      ${D.sites.length ? `<div class="tbl-wrap"><table class="ctbl"><thead><tr><th>Site</th><th>Évolution</th><th class="r">Conv.</th><th class="r">Contacts</th><th class="r">vs préc.</th></tr></thead><tbody>
+      ${D.sites.slice(0, 10).map(o => `<tr class="nohov"><td><b style="font-weight:600">INFN ${esc(o.site)}</b></td><td>${bars(o.series, "#E87BA4")}</td><td class="r num"><b>${o.n}</b></td><td class="r num">${o.l}</td><td class="r">${delta(o.n, o.prev)}</td></tr>`).join("")}</tbody></table></div>` : emptyMini()}
+    </div>
+    <div class="card"><div class="card-h"><div><h3>Informations demandées absentes de la page</h3><p>Questions restées sans réponse, par fréquence</p></div></div>
+      ${D.unanswered.length ? `<div class="rank">${D.unanswered.slice(0, 8).map(o => `<div class="it click" data-open="${o.id}"><span class="n" title="${esc(o.q)}">${esc(o.q)}</span><span class="v"><b>${o.n}</b>fois</span><span class="bar"><i style="width:${(100 * o.n / D.unanswered[0].n).toFixed(1)}%;background:${C_KO}"></i></span></div>`).join("")}</div>` : `<div class="empty">${I.check}<b>Tout est couvert</b>Aucune question sans réponse sur la période.</div>`}
+    </div>
+  </div>
+  <div class="grid g-1-1">
+    <div class="card"><div class="card-h"><div><h3>Pages ouvertes depuis l'assistant</h3><p>Sections de la page et liens INFN cliqués</p></div></div>
+      ${D.pages.length ? `<div class="redir-top" style="border:0;padding:0;margin:0">${D.pages.slice(0, 8).map(o => `<div class="rt"><i style="background:${RCAT[o.k === "section" ? "section" : "lien"].c}"></i><span class="n" title="${esc(o.t)}">${esc(o.t)}</span><span class="b"><em style="width:${(100 * o.n / D.pages[0].n).toFixed(1)}%;background:${RCAT[o.k === "section" ? "section" : "lien"].c}"></em></span><b class="num">${o.n}</b></div>`).join("")}
+        <div class="legend" style="margin-top:12px"><span><i style="background:${RCAT.section.c}"></i>Section de la page</span><span><i style="background:${RCAT.lien.c}"></i>Page ou document INFN</span></div></div>` : emptyMini()}
+    </div>
+    <div class="card"><div class="card-h"><div><h3>Jours où les questions arrivent</h3><p>Part des questions de la période, heure de Paris</p></div></div>
+      <div class="dows">${D.dow.map((v, i) => `<div class="dw"><span class="dl">${DOW[i]}</span><span class="db"><em style="width:${(100 * v / Math.max(1, ...D.dow)).toFixed(1)}%"></em></span><b class="num">${v}</b><small class="num">${pf(100 * v / D.q)}</small></div>`).join("")}</div>
+      <div class="insight">${I.bulb}<span>Créneau de 3 h le plus actif : <b>${D.slot[0]} h – ${(D.slot[0] + 3) % 24} h</b>, ${pf(100 * D.slot[1] / D.q)} des questions.</span></div>
+    </div>
+  </div>`;
 }
 
 function table(rows, { compact } = {}) {
@@ -407,6 +539,7 @@ function openDrawer(id) {
       if (e.sources?.length) thread += `<div class="srcs">${e.sources.map(s => `<span>${esc(s)}</span>`).join("")}</div>`;
     } else if (e.type === "feedback") thread += `<div class="ev">Avis du visiteur : ${e.value === "up" ? "👍 utile" : "👎 pas utile"}</div>`;
     else if (e.type === "site") thread += `<div class="ev">Site choisi : <b>INFN ${esc(e.site)}</b></div>`;
+    else if (e.type === "redirect") thread += `<div class="ev">↗ Redirigé vers ${e.kind === "section" ? "la section" : ""} <b>${esc(e.target)}</b></div>`;
     else if (e.type === "lead") thread += `<div class="ev">✉︎ Demande de contact transmise à <b>INFN ${esc(e.site)}</b></div>`;
   }
   const qq = model().find(x => x.id === id) || q;
@@ -428,22 +561,23 @@ $("#scrim").onclick = closeDrawer;
 document.addEventListener("keydown", e => { if (e.key === "Escape") closeDrawer(); });
 
 /* ---------- Rendu ---------- */
-const TITLES = { overview: "Vue d'ensemble", analytics: "Analytics", questions: "Questions", gaps: "À enrichir", comm: "Aide com' · newsletter et réseaux" };
+const TITLES = { overview: "Vue d'ensemble", analytics: "Analytics", questions: "Questions", gaps: "À enrichir", comm: "Récap com' · ce que demandent les candidats" };
 function render() {
   const st = stats();
   $("#title").textContent = TITLES[S.view];
-  $("#range").textContent = rangeText(st.R);
+  $("#range").textContent = S.view === "comm" ? commRangeText(commRange(S.cp)) : rangeText(st.R);
   $("#navAll").textContent = nf.format(st.q);
   $("#navGaps").textContent = nf.format(st.unanswered.length);
   $("#navGaps").hidden = !st.unanswered.length;
   document.querySelectorAll("#nav button").forEach(b => b.classList.toggle("on", b.dataset.view === S.view));
   document.querySelectorAll("#period button").forEach(b => b.classList.toggle("on", +b.dataset.p === S.period));
+  $("#period").hidden = S.view === "comm";
   const v = $("#view");
   document.querySelectorAll("#mode button").forEach(b => b.classList.toggle("on", b.dataset.mode === S.mode));
   if (!st.all.length) { v.innerHTML = emptyState(S.mode === "real" ? `Les questions posées à l'assistant sur la page du DMN apparaîtront ici en temps réel.<br><br><button class="btn" data-mode="demo" style="margin:auto">Voir le tableau de bord avec des données de démonstration</button>` : ""); bindView(); return; }
   const V = { overview, analytics, questions: questionsView, gaps: gapsView, comm: commView };
   v.innerHTML = (S.mode === "demo" ? `<div class="demo-banner">${I.alert}<span><b>Mode démonstration</b> · trafic simulé à partir de vraies réponses de l'assistant. Les chiffres ne reflètent pas une utilisation réelle.</span><button data-mode="real">Voir les données réelles</button></div>` : "") + V[S.view](st);
-  bindDaily(st); bindHeat(); bindView();
+  bindDaily(st); bindRedir(st); bindHeat(); bindView();
 }
 function bindView() {
   const v = $("#view");
@@ -455,7 +589,8 @@ function bindView() {
   const fq = $("#fq"); if (fq) { fq.oninput = () => { S.f.q = fq.value; S.page = 0; clearTimeout(fq._t); fq._t = setTimeout(() => { render(); const n = $("#fq"); n.focus(); n.setSelectionRange(n.value.length, n.value.length); }, 180); }; }
   [["#ftheme", "theme"], ["#fstatus", "status"], ["#ffb", "fb"]].forEach(([s, k]) => { const el = $(s); if (el) el.onchange = () => { S.f[k] = el.value; S.page = 0; render(); }; });
   v.querySelectorAll("[data-mode]").forEach(b => b.onclick = () => setMode(b.dataset.mode));
-  const g = $("#genComm"); if (g) g.onclick = genComm;
+  v.querySelectorAll("[data-cp]").forEach(b => b.onclick = () => { S.cp = b.dataset.cp; saveUI(); render(); });
+  const cr = $("#copyRecap"); if (cr) cr.onclick = async () => { try { await navigator.clipboard.writeText(S._recap || ""); toast("Récap copié"); } catch { toast("Copie impossible"); } };
   const p = $("#prev"), n = $("#next"); if (p) p.onclick = () => { S.page--; render(); }; if (n) n.onclick = () => { S.page++; render(); };
 }
 function skeleton() {
@@ -482,7 +617,7 @@ async function loadDemo() {
   if (S.demo) return;
   const d = await (await fetch("/admin/demo-data.json", { cache: "no-store" })).json();
   const shift = Math.max(0, Math.floor((S.now - Date.parse(d.generatedAt)) / 864e5)) * 864e5;
-  S.demo = d.events.map(e => ({ ...e, ts: new Date(Date.parse(e.ts) + shift).toISOString() }));
+  S.demo = d.events.map(e => ({ ...e, ...(e.ai != null ? d.answers[e.ai] : {}), ts: new Date(Date.parse(e.ts) + shift).toISOString() }));
 }
 async function setMode(m) {
   S.mode = m; S.modeChosen = true; saveUI(); S.page = 0; closeDrawer();
